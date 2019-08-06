@@ -1,0 +1,14 @@
+@startuml
+left to right direction
+
+actor user 
+
+rectangle MVP {
+  :user:->(体調を記録する)
+  (体調を記録する)-down.>(現在の体調を記録する):include
+   :user:-> (体調を表示する)
+  (体調を表示する) -down.> (1ヶ月分の体調表示) :includes
+  (体調を表示する)-down.> (1週間の体調表示) :includes
+}
+
+@enduml
