@@ -11,6 +11,7 @@ jobs:
           MYSQL_ALLOW_EMPTY_PASSWORD: true
           MYSQL_ROOT_PASSWORD: ''
           MYSQL_DATABASE: sst_test
+          TZ: Asia/Tokyo
     working_directory: ~/repo
     steps:
       - checkout
