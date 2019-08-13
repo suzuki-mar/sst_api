@@ -10,7 +10,7 @@ jobs:
         environment:
           MYSQL_ALLOW_EMPTY_PASSWORD: true
           MYSQL_ROOT_PASSWORD: ''
-          MYSQL_DATABASE: ci_rails_sample_test
+          MYSQL_DATABASE: sst_test
     working_directory: ~/repo
     steps:
       - checkout
