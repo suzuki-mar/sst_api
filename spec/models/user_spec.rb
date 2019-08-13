@@ -101,7 +101,9 @@ RSpec.describe User, type: :model do
 
     it '今月の記録を取得する' do
 
-     this_month_start_day =  DateTime.now.beginning_of_month
+      pp Time.zone
+
+     this_month_start_day =  Time.zone.now.beginning_of_month
 
       log_dates = [
        this_month_start_day.end_of_month,
