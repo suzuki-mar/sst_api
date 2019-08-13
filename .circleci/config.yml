@@ -21,11 +21,11 @@ jobs:
       - run:
           name: bundle install
           command: bundle install --path vendor/bundle
-    #   - save_cache:
-    #       name: bundle installの結果をキャッシュ
-    #       paths:
-    #         - ./vendor/bundle
-    #       key: v1-dependencies-{{ checksum "Gemfile.lock" }}
+      - save_cache:
+          name: bundle installの結果をキャッシュ
+          paths:
+            - ./vendor/bundle
+          key: v1-dependencies-{{ checksum "Gemfile.lock" }}
     #   - run:
     #       name: rubocopを実行(Lint)
     #       command: bundle exec rubocop
