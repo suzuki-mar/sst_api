@@ -111,8 +111,6 @@ RSpec.describe User, type: :model do
        this_month_start_day - 1.month
       ]
 
-      pp log_dates
-      
       log_dates.each do |d|
         self_care = build(:self_care, user: user, log_date:d)
         self_care.save(validate: false)
@@ -120,10 +118,7 @@ RSpec.describe User, type: :model do
       
     this_month_self_cares = user.self_cares_of_this_month
 
-    pp this_month_self_cares
-
-
-     expect(this_month_self_cares.count).to eq(2)   
+    expect(this_month_self_cares.count).to eq(2)   
 
       # 古い日付順にソートされている
       expect(this_month_self_cares[0].log_date.day).to eq(log_dates[1].day)
