@@ -108,6 +108,8 @@ RSpec.describe User, type: :model do
        this_month_start_day,
        this_month_start_day - 1.month
       ]
+
+      pp log_dates
       
       log_dates.each do |d|
         self_care = build(:self_care, user: user, log_date:d)
