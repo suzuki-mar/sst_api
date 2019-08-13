@@ -1,0 +1,51 @@
+version: 2
+
+jobs:
+  test:
+    docker:
+      - image: circleci/ruby:2.5.1-node-browsers
+        environment:
+          RAILS_ENV: test
+      - image: circleci/mysql:5.6
+        environment:
+          MYSQL_ALLOW_EMPTY_PASSWORD: true
+          MYSQL_ROOT_PASSWORD: ''
+          MYSQL_DATABASE: ci_rails_sample_test
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - restore_cache:
+          name: bundle installの結果をrestore
+          keys: 
+            - v1-dependencies-{{ checksum "Gemfile.lock" }}
+      - run:
+          name: bundle install
+          command: bundle install --path vendor/bundle
+    #   - save_cache:
+    #       name: bundle installの結果をキャッシュ
+    #       paths:
+    #         - ./vendor/bundle
+    #       key: v1-dependencies-{{ checksum "Gemfile.lock" }}
+    #   - run:
+    #       name: rubocopを実行(Lint)
+    #       command: bundle exec rubocop
+    #   - run:
+    #       name: brakemanを実行(セキュリティチェック)
+    #       command: bundle exec brakeman -4 -A -w 1 -z
+      - run:
+          name: データベースの起動を待機
+          command: dockerize -wait tcp://127.0.0.1:3306 -timeout 1m
+      - run:
+          name: データベースのセットアップ
+          command: bundle exec rake db:schema:load
+      - run: 
+          name: テストの実行
+          command: bundle exec rspec
+    #   - store_artifacts:
+    #       path: coverage
+
+workflows:
+  version: 2
+  workflows:
+    jobs:
+      - test
