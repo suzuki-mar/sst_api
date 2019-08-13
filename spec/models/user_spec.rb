@@ -115,6 +115,10 @@ RSpec.describe User, type: :model do
       end
       
     this_month_self_cares = user.self_cares_of_this_month
+
+    pp this_month_self_cares
+
+
      expect(this_month_self_cares.count).to eq(2)   
 
       # 古い日付順にソートされている
