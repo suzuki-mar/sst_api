@@ -1,0 +1,2 @@
+class SelfCareClassification < ApplicationRecord
+end

@@ -1,5 +1,11 @@
 @startuml er
 
+entity "ユーザー" as user {
+  id 
+  --
+  name[varchar]
+}
+
 entity "セルフケア分類" as self_care_classification {
   id
   --
@@ -11,13 +17,14 @@ entity "セルフケア分類" as self_care_classification {
 entity "セルフケア" as self_care {
   id
   self_care_classification_id[FK]
+  user_id[FK]
   --
-  log_date[date]
+  log_date[datetime]
   reason[text]
   point[tinyint|1~10]
-  am_pm[tinyint|0~1]
 }
 
 self_care_classification ----{ self_care
+user ----o{self_care
 
 @enduml

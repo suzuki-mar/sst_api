@@ -9,6 +9,7 @@ rectangle MVP {
    :user:-> (体調を表示する)
   (体調を表示する) -down.> (1ヶ月分の体調表示) :includes
   (体調を表示する)-down.> (1週間の体調表示) :includes
+  :user:->(記録の最速)
 }
 
 @enduml
