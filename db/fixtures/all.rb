@@ -1,7 +1,9 @@
-#TODO データが多くなってきたらファイル分割する
+# frozen_string_literal: true
+
+# TODO: データが多くなってきたらファイル分割する
 User.seed do |s|
   s.id = 1
-  s.name = 'Test User'
+  s.name = "Test User"
 end
 
 SelfCareClassification.seed do |s|
