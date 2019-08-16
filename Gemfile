@@ -48,6 +48,9 @@ group :development, :test do
   gem 'rspec-rails'
   gem "factory_bot_rails"
   gem 'faker'
+  gem 'grape-swagger', '~> 0.33.0'
+  gem 'grape-swagger-entity', '~> 0.3.3'
+  gem 'swagger_ui_engine', '~> 1.1', '>= 1.1.3'
 end
 
 group :development do
@@ -58,9 +61,6 @@ group :development do
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
 
-  gem 'grape-swagger', '~> 0.33.0'
-  gem 'grape-swagger-entity', '~> 0.3.3'
-  gem 'swagger_ui_engine', '~> 1.1', '>= 1.1.3'
 end
 
 group :test do 
