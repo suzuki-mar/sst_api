@@ -1,5 +1,6 @@
 require:
    - rubocop-rails
+   - rubocop-rspec
 
 Rails:
   Enabled: true
@@ -25,3 +26,9 @@ Metrics/BlockLength:
     - "spec/**/*" #specはブロックが長くなる
 Style/Documentation:
   Enabled: false
+RSpec/NestedGroups:
+  Enabled: false
+RSpec/ContextWording: 
+  Enabled: false #日本語を使うとwhen等は書かないので
+RSpec/MultipleExpectations:
+  Max: 3 #1回だけexpectを実行するとは限らないが多すぎるのは弾きたいため
