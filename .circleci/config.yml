@@ -27,9 +27,9 @@ jobs:
           paths:
             - ./vendor/bundle
           key: v1-dependencies-{{ checksum "Gemfile.lock" }}
-    #   - run:
-    #       name: rubocopを実行(Lint)
-    #       command: bundle exec rubocop
+      - run:
+          name: rubocopを実行(Lint)
+          command: bundle exec rubocop
     #   - run:
     #       name: brakemanを実行(セキュリティチェック)
     #       command: bundle exec brakeman -4 -A -w 1 -z
