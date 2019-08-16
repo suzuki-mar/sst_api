@@ -1,27 +1,27 @@
 # frozen_string_literal: true
 
-require "rails_helper"
+require 'rails_helper'
 
 RSpec.describe User, type: :model do
-  describe "associations" do
+  describe 'associations' do
     subject { build(:user) }
 
     it { should have_many(:self_cares).dependent(:nullify) }
   end
 
-  describe "Validation" do
+  describe 'Validation' do
     subject { build(:user) }
 
     it { should validate_presence_of(:name) }
   end
 
-  describe "need_to_write_log?" do
+  describe 'need_to_write_log?' do
     let(:user) { create(:user) }
 
-    context "当日の記録の午後" do
+    context '当日の記録の午後' do
       let(:search_date) { DateTime.now.change(hour: 13) }
 
-      it "２回記録している場合はtrueが帰ること" do
+      it '２回記録している場合はtrueが帰ること' do
         # 未来の記録をするとバリデーションにひっかかるのでバリデーションはおこなわない
         self_care = build(:self_care, user: user, log_date: search_date)
         self_care.save(validate: false)
@@ -31,7 +31,7 @@ RSpec.describe User, type: :model do
         expect(user.need_to_write_log?(search_date)).to be_truthy
       end
 
-      it "記録回数が2回未満の場合はfalseが帰ること" do
+      it '記録回数が2回未満の場合はfalseが帰ること' do
         # 未来の記録をするとバリデーションにひっかかるのでバリデーションはおこなわない
         self_care = build(:self_care, user: user, log_date: search_date)
         self_care.save(validate: false)
@@ -40,30 +40,30 @@ RSpec.describe User, type: :model do
       end
     end
 
-    context "当日の記録の午前" do
+    context '当日の記録の午前' do
       let(:search_date) { DateTime.now.change(hour: 0) }
 
-      it "1回以上記録している場合はtrueが帰ること" do
+      it '1回以上記録している場合はtrueが帰ること' do
         create(:self_care, user: user, log_date: search_date)
         expect(user.need_to_write_log?(search_date)).to be_truthy
       end
 
-      it "1回も記録していない場合はfalseが帰ること" do
+      it '1回も記録していない場合はfalseが帰ること' do
         expect(user.need_to_write_log?(DateTime.now)).to be_falsey
       end
     end
 
-    context "昨日の記録の午前" do
+    context '昨日の記録の午前' do
       let(:search_date) { DateTime.yesterday.change(hour: 0) }
 
-      it "2回以上記録している場合はtrueが帰ること" do
+      it '2回以上記録している場合はtrueが帰ること' do
         create(:self_care, user: user,  log_date: search_date)
         create(:self_care, user: user,  log_date: search_date)
 
         expect(user.need_to_write_log?(search_date)).to be_truthy
       end
 
-      it "記録回数が2回未満の場合はfalseが帰ること" do
+      it '記録回数が2回未満の場合はfalseが帰ること' do
         create(:self_care, user: user, log_date: search_date)
 
         expect(user.need_to_write_log?(search_date)).to be_falsey
@@ -71,10 +71,10 @@ RSpec.describe User, type: :model do
     end
   end
 
-  describe "self_care_of_this_week" do
+  describe 'self_care_of_this_week' do
     let(:user) { create(:user) }
 
-    it "今週1週間分のセルフケアを取得する" do
+    it '今週1週間分のセルフケアを取得する' do
       log_dates = [
         DateTime.now,
         DateTime.now - 6.days,
@@ -94,10 +94,10 @@ RSpec.describe User, type: :model do
     end
   end
 
-  describe "self_cares_of_this_month" do
+  describe 'self_cares_of_this_month' do
     let(:user) { create(:user) }
 
-    it "今月の記録を取得する" do
+    it '今月の記録を取得する' do
       pp Time.zone
 
       this_month_start_day = Time.zone.now.beginning_of_month

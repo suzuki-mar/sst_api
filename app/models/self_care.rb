@@ -11,6 +11,6 @@ class SelfCare < ApplicationRecord
   private
 
   def validate_of_not_future_log
-    errors.add(:log_date, "未来の日付にはできません") if DateTime.now < log_date
-   end
+    errors.add(:log_date, '未来の日付にはできません') if DateTime.now < log_date
+  end
 end

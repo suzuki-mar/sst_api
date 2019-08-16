@@ -1,4 +1,27 @@
-inherit_gem:
-  rubocop-github:
-    - config/default.yml
-    - config/rails.yml
+require:
+   - rubocop-rails
+
+Rails:
+  Enabled: true
+AllCops:
+  Exclude:
+    - "vendor/**/*"
+    - "db/schema.rb"
+    - "Gemfile"
+    - "Rakefile"
+    - bin/*
+AsciiComments:
+  Enabled: false
+Metrics/LineLength:
+  Exclude:
+    #specの設定はファイル行数が長くても問題ない 
+    - "spec/spec_helper.rb"
+    - "spec/rails_helper.rb"
+    - config/**/* #設定が長くなるのは仕方がない
+    - db/migrate/*
+    - db/seeds.rb
+Metrics/BlockLength:
+  Exclude:
+    - "spec/**/*" #specはブロックが長くなる
+Style/Documentation:
+  Enabled: false

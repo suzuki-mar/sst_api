@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :self_care_classification do
-    name { "MyString" }
+    name { 'MyString' }
     order_number { 1 }
     kind { 1 }
   end
