@@ -27,6 +27,12 @@ gem 'jbuilder', '~> 2.5'
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
+gem 'rack-cors'
+
+gem 'grape'
+gem 'grape-entity'
+gem 'seed-fu'
+
 # Use ActiveStorage variant
 # gem 'mini_magick', '~> 4.8'
 
@@ -51,6 +57,10 @@ group :development do
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
+
+  gem 'grape-swagger', '~> 0.33.0'
+  gem 'grape-swagger-entity', '~> 0.3.3'
+  gem 'swagger_ui_engine', '~> 1.1', '>= 1.1.3'
 end
 
 group :test do 
