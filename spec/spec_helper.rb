@@ -15,6 +15,19 @@
 # it.
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
+
+require 'rails/all'
+
+require 'simplecov'
+
+SimpleCov.profiles.define 'default' do
+  load_profile 'rails'
+  add_filter 'vendor'
+end
+SimpleCov.start 'default'
+
+require "apivore"
+
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
