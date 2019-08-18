@@ -30,9 +30,9 @@ jobs:
       - run:
           name: rubocopを実行(Lint)
           command: bundle exec rubocop
-    #   - run:
-    #       name: brakemanを実行(セキュリティチェック)
-    #       command: bundle exec brakeman -4 -A -w 1 -z
+      - run:
+          name: brakemanを実行(セキュリティチェック)
+          command: bundle exec brakeman -4 -A -w 1 -z
       - run:
           name: データベースの起動を待機
           command: dockerize -wait tcp://127.0.0.1:3306 -timeout 1m
