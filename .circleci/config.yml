@@ -41,7 +41,7 @@ jobs:
           command: bundle exec rake db:schema:load
       - run: 
           name: テストの実行
-          command: bundle exec rspec
+          command: bundle exec rspec -fd --tag ~@use_external_network:true
       - store_artifacts:
           path: coverage
 

@@ -66,6 +66,10 @@ RSpec.configure do |config|
   config.include FactoryBot::Syntax::Methods
 end
 
+# Spec内で使用するために
+require 'figaro'
+Figaro.load
+
 Shoulda::Matchers.configure do |config|
   config.integrate do |with|
     # 今回はRspecを使うのでこのように設定
@@ -79,3 +83,5 @@ Shoulda::Matchers.configure do |config|
     with.library :rails
   end
 end
+
+Rails.logger = Logger.new(STDOUT)
