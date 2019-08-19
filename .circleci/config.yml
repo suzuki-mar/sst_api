@@ -29,6 +29,14 @@ commands:
           paths:
             - ./vendor/bundle
           key: v1-dependencies-{{ checksum "Gemfile.lock" }}
+  db_setup: 
+    steps:
+      - run:
+          name: データベースの起動を待機
+          command: dockerize -wait tcp://127.0.0.1:3306 -timeout 1m
+      - run:
+          name: データベースのセットアップ
+          command: bundle exec rake db:schema:load
 
 jobs:
   test:
@@ -42,12 +50,7 @@ jobs:
       - run:
           name: brakemanを実行(セキュリティチェック)
           command: bundle exec brakeman -4 -A -w 1 -z
-      - run:
-          name: データベースの起動を待機
-          command: dockerize -wait tcp://127.0.0.1:3306 -timeout 1m
-      - run:
-          name: データベースのセットアップ
-          command: bundle exec rake db:schema:load
+      - db_setup
       - run: 
           name: テストの実行
           command: bundle exec rspec -fd --tag ~@use_external_network:true
