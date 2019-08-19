@@ -2,9 +2,10 @@ version: 2
 
 commands:
   bundle_install:
-    - run:
-        name: bundle install
-        command: bundle install --path vendor/bundle
+    steps:
+      - run:
+          name: bundle install
+          command: bundle install --path vendor/bundle
 
 jobs:
   test:
