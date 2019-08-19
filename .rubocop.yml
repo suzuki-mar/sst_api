@@ -14,7 +14,9 @@ AllCops:
 AsciiComments:
   Enabled: false
 Metrics/LineLength:
-  Max: 100
+#80文字だと厳しいのでJavaのコーディング規約等にならい100文字にする
+#Javaのコーディング規約 https://google.github.io/styleguide/javaguide.html#s4.4-column-limit
+  Max: 100 
   Exclude:
     #specの設定はファイル行数が長くても問題ない 
     - "spec/spec_helper.rb"
