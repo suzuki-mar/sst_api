@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 # Gmail以外の通知手段は2019/8/18時点では考えていないのでGmailの処理を直接書いているが他の通知手段にする場合は各アダプタークラスを作成する
 # 詳細は以下のドキュメントを参照
- # https://github.com/suzuki-mar/sst_api/wiki/%E9%80%9A%E7%9F%A5%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6
- 
+# https://github.com/suzuki-mar/sst_api/wiki/%E9%80%9A%E7%9F%A5%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6
+
 class ReminderNotifyer
   def initialize
     @to = ENV['GMAIL_ADDRESS']
