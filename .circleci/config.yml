@@ -1,5 +1,11 @@
 version: 2
 
+commands:
+  bundle_install:
+    - run:
+        name: bundle install
+        command: bundle install --path vendor/bundle
+
 jobs:
   test:
     docker:
@@ -19,9 +25,7 @@ jobs:
           name: bundle installの結果をrestore
           keys: 
             - v1-dependencies-{{ checksum "Gemfile.lock" }}
-      - run:
-          name: bundle install
-          command: bundle install --path vendor/bundle
+      - bundle_install
       - save_cache:
           name: bundle installの結果をキャッシュ
           paths:
