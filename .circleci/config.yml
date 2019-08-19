@@ -1,5 +1,19 @@
 version: 2.1
 
+executors:
+  rails:
+    docker:
+      - image: circleci/ruby:2.5.1-node-browsers
+        environment:
+          RAILS_ENV: test
+      - image: circleci/mysql:5.6
+        environment:
+          MYSQL_ALLOW_EMPTY_PASSWORD: true
+          MYSQL_ROOT_PASSWORD: ''
+          MYSQL_DATABASE: sst_test
+          TZ: /usr/share/zoneinfo/Asia/Tokyo
+    working_directory: ~/repo
+
 commands:
   bundle_install:
     steps:
@@ -18,17 +32,7 @@ commands:
 
 jobs:
   test:
-    docker:
-      - image: circleci/ruby:2.5.1-node-browsers
-        environment:
-          RAILS_ENV: test
-      - image: circleci/mysql:5.6
-        environment:
-          MYSQL_ALLOW_EMPTY_PASSWORD: true
-          MYSQL_ROOT_PASSWORD: ''
-          MYSQL_DATABASE: sst_test
-          TZ: /usr/share/zoneinfo/Asia/Tokyo
-    working_directory: ~/repo
+    executor: rails
     steps:
       - checkout
       - bundle_install
