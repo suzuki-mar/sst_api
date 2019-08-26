@@ -8,4 +8,14 @@ RSpec.describe SelfCareClassification, type: :model do
 
     it { is_expected.to belong_to(:user) }
   end
+
+  describe 'enum' do
+    subject { build(:self_care_classification) }
+
+    it do 
+      should define_enum_for(:kind).with_values(good: 1, normal: 2, bad: 3)
+    end
+
+  end
+
 end

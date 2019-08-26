@@ -5,6 +5,6 @@ FactoryBot.define do
     user
     name { 'MyString' }
     order_number { 1 }
-    kind { 1 }
+    kind {:bad}
   end
 end
