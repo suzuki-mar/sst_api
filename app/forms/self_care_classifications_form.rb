@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-# order_numberは適当な値でも許可するため
-
 class SelfCareClassificationsForm
   include ActiveModel::Model
 
@@ -17,8 +15,11 @@ class SelfCareClassificationsForm
   def save!
     raise SelfCareClassificationsForm::InvalidError, self unless validate
 
-    @target_classificaitons = fetch_target_classificaitons
-    save_all_group_classfications
+    target_classificaitons = fetch_target_classificaitons
+    modified_all_group_params = create_modified_all_group_params
+
+    saver = Saver.new(@user, modified_all_group_params, target_classificaitons)
+    saver.save_all_group_classfications
 
     true
   end
@@ -31,24 +32,17 @@ class SelfCareClassificationsForm
 
   private
 
-  def fetch_target_classificaitons
-    ids = @all_group_params.each_with_object([]) do |(_kind_name, params), array|
-      array.concat(params.pluck('id'))
-    end
-    ids = ids.reject(&:blank?)
-    SelfCareClassification.where(id: ids)
-  end
-
-  def save_all_group_classfications
+  def create_modified_all_group_params
+    modified_all_group_params = {}
     @all_group_params.each do |kind_name, params|
-      next if params.empty?
-
-      modified_params = create_modified_params(params)
-      modified_params.each do |param|
-        classification = create_or_assign_attributes_classification(param, kind_name)
-        classification.save!
-      end
+      modified_all_group_params[kind_name] = if params.empty?
+                                               []
+                                             else
+                                               create_modified_params(params)
+                                             end
     end
+
+    modified_all_group_params
   end
 
   def create_modified_params(params)
@@ -58,30 +52,12 @@ class SelfCareClassificationsForm
     end
   end
 
-  def create_classification_assign_attributes(param, kind_name)
-    kind_name_sym = kind_name.to_sym
-
-    {
-      user: @user, name: param['name'], order_number: param['order_number'],
-      kind: kind_name_sym
-    }
-  end
-
-  def create_or_assign_attributes_classification(param, kind_name)
-    if param['id'].present?
-      values = create_classification_assign_attributes(param, kind_name)
-      classification = @target_classificaitons.find { |c| c.id == param['id'].to_i }
-      classification.assign_attributes(values)
-    else
-      classification = create_classification(param, kind_name)
+  def fetch_target_classificaitons
+    ids = @all_group_params.each_with_object([]) do |(_kind_name, params), array|
+      array.concat(params.pluck('id'))
     end
-
-    classification
-  end
-
-  def create_classification(param, kind_name)
-    values = create_classification_assign_attributes(param, kind_name)
-    SelfCareClassification.new(values)
+    ids = ids.reject(&:blank?)
+    SelfCareClassification.where(id: ids)
   end
 
   def check_unknown_kind_name
