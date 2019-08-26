@@ -17,16 +17,8 @@ class SelfCareClassificationsForm
   def save!
     raise SelfCareClassificationsForm::InvalidError, self unless validate
 
-    @all_group_params.each do |kind_name, params|
-      next if params.empty?
-
-      modified_params = create_modified_params(params)
-
-      modified_params.each do |param|
-        classification = create_classification!(param, kind_name)
-        classification.save!
-      end
-    end
+    @target_classificaitons = fetch_target_classificaitons
+    save_all_group_classfications
 
     true
   end
@@ -39,22 +31,57 @@ class SelfCareClassificationsForm
 
   private
 
-  def create_modified_params(params)
-    sorted_params = params.sort_by { |param| param['order_number'] }
-    sorted_params.map.with_index do |param, index|
-      { 'name' => param['name'], 'order_number' => index + 1 }
+  def fetch_target_classificaitons
+    ids = @all_group_params.each_with_object([]) do |(_kind_name, params), array|
+      array.concat(params.pluck('id'))
+    end
+    ids = ids.reject(&:blank?)
+    SelfCareClassification.where(id: ids)
+  end
+
+  def save_all_group_classfications
+    @all_group_params.each do |kind_name, params|
+      next if params.empty?
+
+      modified_params = create_modified_params(params)
+      modified_params.each do |param|
+        classification = create_or_assign_attributes_classification(param, kind_name)
+        classification.save!
+      end
     end
   end
 
-  def create_classification!(param, kind_name)
+  def create_modified_params(params)
+    sorted_params = params.sort_by { |param| param['order_number'] }
+    sorted_params.map.with_index do |param, index|
+      { 'id' => param['id'], 'name' => param['name'], 'order_number' => index + 1 }
+    end
+  end
+
+  def create_classification_assign_attributes(param, kind_name)
     kind_name_sym = kind_name.to_sym
 
-    SelfCareClassification.new(
-      user: @user,
-      name: param['name'],
-      order_number: param['order_number'],
+    {
+      user: @user, name: param['name'], order_number: param['order_number'],
       kind: kind_name_sym
-    )
+    }
+  end
+
+  def create_or_assign_attributes_classification(param, kind_name)
+    if param['id'].present?
+      values = create_classification_assign_attributes(param, kind_name)
+      classification = @target_classificaitons.find { |c| c.id == param['id'].to_i }
+      classification.assign_attributes(values)
+    else
+      classification = create_classification(param, kind_name)
+    end
+
+    classification
+  end
+
+  def create_classification(param, kind_name)
+    values = create_classification_assign_attributes(param, kind_name)
+    SelfCareClassification.new(values)
   end
 
   def check_unknown_kind_name
@@ -96,8 +123,9 @@ class SelfCareClassificationsForm
   end
 
   def invalid_params?(param)
-    unkonwn_param_names = param.keys - %w[name order_number]
-    !(param.key?('name') && param.key?('order_number')) || unkonwn_param_names.present?
+    unkonwn_param_names = param.keys - %w[name order_number id]
+    some_paramete_not_set = !(param.key?('id') && param.key?('name') && param.key?('order_number'))
+    some_paramete_not_set || unkonwn_param_names.present?
   end
 
   def create_error_messages_with_kind_names(base_message, kind_names)
@@ -106,7 +134,6 @@ class SelfCareClassificationsForm
       error_message += "#{name},"
     end
     error_message.slice!(-1)
-
     error_message
   end
 end
