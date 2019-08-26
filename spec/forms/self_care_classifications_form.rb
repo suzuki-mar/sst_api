@@ -108,7 +108,8 @@ describe SelfCareClassificationsForm, type: :model do
         ],
 
         'normal' => [
-          {'name' =>  "name1",  'order_number' =>  2},
+          {'name' =>  "name1",  'order_number' =>  4},
+          {'name' =>  "name2",  'order_number' =>  2}
         ],
 
         'bad' => [
@@ -127,25 +128,38 @@ describe SelfCareClassificationsForm, type: :model do
         expect(SelfCareClassification.where(kind: :good).count).to eq(1)
       end
 
+      it 'order_numberを正しく設定できていること' do
+        subject
+        order_numbers = SelfCareClassification.where(kind: :normal).pluck(:order_number)
+        expect(order_numbers).to eq([1, 2])
+      end
+
+      pending 'すでに分類が作成している場合'
+
     end
 
     context 'パラメーターがエラーの場合' do
-      let(:params){
-        {
-          'good' =>  [
-            {'name' => "name1",  'order_number' => 1},
-          ],
-  
-          'normal' => [
-            {'name' =>  "name1",  'order_number' =>  2},
-          ]
+
+      context 'パラメーターが足りない場合' do
+        let(:params){
+          {
+            'good' =>  [
+              {'name' => "name1",  'order_number' => 1},
+            ],
+    
+            'normal' => [
+              {'name' =>  "name1",  'order_number' =>  2},
+            ]
+          }
         }
-      }
-  
-      it '例外が発生すること' do
-        expect { subject }.to raise_error(SelfCareClassificationsForm::InvalidError)
+    
+        it '例外が発生すること' do
+          expect { subject }.to raise_error(SelfCareClassificationsForm::InvalidError)
+        end
       end
-  
+
+      pending '同じ項目名で同じorder_numberが存在する場合''' 
+
     end
   
   end

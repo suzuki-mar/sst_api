@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# order_numberは適当な値でも許可するため
+
 class SelfCareClassificationsForm
   include ActiveModel::Model
 
@@ -16,7 +18,11 @@ class SelfCareClassificationsForm
     raise SelfCareClassificationsForm::InvalidError, self unless validate
 
     @all_group_params.each do |kind_name, params|
-      params.each do |param|
+      next if params.empty?
+
+      modified_params = create_modified_params(params)
+
+      modified_params.each do |param|
         classification = create_classification!(param, kind_name)
         classification.save!
       end
@@ -32,6 +38,13 @@ class SelfCareClassificationsForm
   end
 
   private
+
+  def create_modified_params(params)
+    sorted_params = params.sort_by { |param| param['order_number'] }
+    sorted_params.map.with_index do |param, index|
+      { 'name' => param['name'], 'order_number' => index + 1 }
+    end
+  end
 
   def create_classification!(param, kind_name)
     kind_name_sym = kind_name.to_sym
