@@ -15,7 +15,6 @@ class SelfCareClassificationsForm
     @all_group_params = all_group_params
   end
 
-  # TODO save on rollback if errorに変更する
   def save!
     raise SelfCareClassificationsForm::InvalidError, self unless validate
     creator = CreaterSaveTargets.new(@user, modified_all_group_params, target_classificaitons)
