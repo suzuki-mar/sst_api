@@ -6,6 +6,7 @@ class SelfCareClassificationsForm
   validate :check_unknown_kind_name
   validate :check_missing_group_names
   validate :check_invalid_params
+  validate :check_classification_ids_of_not_registered
 
   def initialize(user, all_group_params)
     @user = user
@@ -83,6 +84,27 @@ class SelfCareClassificationsForm
 
     errors.add(:kind_name, error_message)
   end
+
+  def check_classification_ids_of_not_registered
+    registered_classification_ids = SelfCareClassification.where(user: @user).pluck(:id)
+    
+    invalid_kind_names = @all_group_params.each_with_object([]) do |(kind_name, params), invalid_kind_names| 
+
+      ids = params.pluck('id').reject(&:blank?)
+       if (ids - registered_classification_ids).present?
+          invalid_kind_names << kind_name
+       end
+    end
+
+    return if invalid_kind_names.blank?
+
+    error_message = create_error_messages_with_kind_names(
+      '不正なIDが渡された項目があります', invalid_kind_names
+    )
+    errors.add(:params, error_message)
+
+  end
+
 
   def check_invalid_params
     invalid_kind_names = @all_group_params.each_with_object([]) do |(kind_name, params), array|
