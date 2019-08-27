@@ -95,7 +95,7 @@ describe SelfCareClassificationsForm, type: :form do
         let(:params) do
           {
             'good' => [{ 'id' => '', 'name' => 'name1', 'order_number' => 1 }],
-            'normal' => [{ 'id' => '',  'name' => 'name1', 'order_number' => 2 }],
+            'normal' => [{ 'id' => '', 'name' => 'name1', 'order_number' => 2 }],
             'bad' => [
               { 'id' => '', 'name' => 'name1', 'order_number' => 2, 'unknow_param': 'hoge' }
             ]
@@ -144,7 +144,6 @@ describe SelfCareClassificationsForm, type: :form do
           expect(form.errors.messages[:params]).to eq(['バリデーションエラーが発生しました:good'])
         end
       end
-
     end
   end
 
@@ -235,6 +234,5 @@ describe SelfCareClassificationsForm, type: :form do
         end
       end
     end
-
   end
 end

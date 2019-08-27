@@ -27,6 +27,8 @@ Metrics/LineLength:
 Metrics/BlockLength:
   Exclude:
     - "spec/**/*" #specはブロックが長くなる
+Metrics/ClassLength:
+  Max: 125 #デフォルト値の1.25倍で頑張りたい
 Style/Documentation:
   Enabled: false
 RSpec/NestedGroups:

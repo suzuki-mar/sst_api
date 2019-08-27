@@ -3,24 +3,24 @@
 class SelfCareClassificationsForm
   include ActiveModel::Model
 
-  validate :check_unknown_kind_name
-  validate :check_missing_group_names
-  validate :check_invalid_params
-  validate :check_classification_ids_of_not_registered
-  validate :check_not_exists_same_order_number
+  validate :check_input_params
+  # 最後に実行する
   validate :check_classifications_validate
 
   def initialize(user, all_group_params)
     @user = user
     @all_group_params = all_group_params
+
+    @creator = CreaterSaveTargets.new(@user, modified_all_group_params, target_classificaitons)
+    @all_group_target_classfications = @creator.create_all_group_target_classfications
+
+    @validator = Validator.new(@user, @all_group_params, @all_group_target_classfications)
   end
 
   def save!
     raise SelfCareClassificationsForm::InvalidError, self unless validate
-    creator = CreaterSaveTargets.new(@user, modified_all_group_params, target_classificaitons)
-    group_classifications =  creator.create_all_group_target_classfications
 
-    group_classifications.each do |kind_name, classifications|
+    @all_group_target_classfications.each do |_kind_name, classifications|
       classifications.each do |classification|
         classification.save!(context: :all_update)
       end
@@ -36,6 +36,7 @@ class SelfCareClassificationsForm
   end
 
   private
+
   def create_modified_all_group_params
     modified_all_group_params = {}
     @all_group_params.each do |kind_name, params|
@@ -64,111 +65,69 @@ class SelfCareClassificationsForm
     SelfCareClassification.where(id: ids)
   end
 
-  def check_unknown_kind_name
-    unkonwn_kind_names = @all_group_params.keys - SelfCareClassification.kinds.keys
-    return if unkonwn_kind_names.blank?
+  VALIDATE_PARAMS = [
+    {
+      method_name_sym: :create_invalid_kind_names_of_unknow_kind_names,
+      base_error_message: '不正な項目名が渡されました',
+      error_key: :kind_name
+    },
+    {
+      method_name_sym: :create_invalid_kind_names_of_missing_kind_names,
+      base_error_message: '足りない項目名があります',
+      error_key: :kind_name
+    },
+    {
+      method_name_sym: :create_invalid_kind_names_of_unknown_classification_ids,
+      base_error_message: '不正なIDが渡された項目があります',
+      error_key: :params
+    },
+    {
+      method_name_sym: :create_invalid_kind_names_of_invalid_params,
+      base_error_message: '不正なパラメーターが渡された項目があります',
+      error_key: :params
+    },
+    {
+      method_name_sym: :create_invalid_kind_names_of_not_exists_same_order_number,
+      base_error_message: '同じ順番が設定されています',
+      error_key: :params
+    }
+  ].freeze
 
-    error_message = create_error_messages_with_kind_names(
-      '不正な項目名が渡されました', unkonwn_kind_names
-    )
-
-    errors.add(:kind_name, error_message)
-  end
-
-  def check_missing_group_names
-    missing_kind_names = SelfCareClassification.kinds.keys - @all_group_params.keys
-    return if missing_kind_names.blank?
-
-    error_message = '足りない項目名があります:'
-    missing_kind_names.each do |name|
-      error_message += "#{name},"
+  def check_input_params
+    VALIDATE_PARAMS.each do |param|
+      check_by_validate_param(param)
     end
-    error_message.slice!(-1)
-
-    errors.add(:kind_name, error_message)
-  end
-
-  def check_classification_ids_of_not_registered
-    registered_classification_ids = SelfCareClassification.where(user: @user).pluck(:id)
-
-    invalid_kind_names = @all_group_params.each_with_object([]) do |(kind_name, params), invalid_kind_names|
-      ids = params.pluck('id').reject(&:blank?)
-      invalid_kind_names << kind_name if (ids - registered_classification_ids).present?
-    end
-
-    return if invalid_kind_names.blank?
-
-    error_message = create_error_messages_with_kind_names(
-      '不正なIDが渡された項目があります', invalid_kind_names
-    )
-    errors.add(:params, error_message)
-  end
-
-  def check_invalid_params
-    invalid_kind_names = @all_group_params.each_with_object([]) do |(kind_name, params), array|
-      invalid = params.any? { |param| invalid_params?(param) }
-      array << kind_name if invalid
-    end
-
-    return if invalid_kind_names.blank?
-
-    error_message = create_error_messages_with_kind_names(
-      '不正なパラメーターが渡された項目があります', invalid_kind_names
-    )
-    errors.add(:params, error_message)
-  end
-
-  def check_not_exists_same_order_number
-    invalid_kind_names = @all_group_params.each_with_object([]) do |(kind_name, params), kind_names|
-      order_numbers = params.pluck('order_number')
-      exists_same_order_number = (order_numbers.count - order_numbers.uniq.count) > 0
-      kind_names << kind_name if exists_same_order_number
-    end
-
-    return if invalid_kind_names.blank?
-
-    error_message = create_error_messages_with_kind_names(
-      '同じ順番が設定されています', invalid_kind_names
-    )
-    errors.add(:params, error_message)
   end
 
   def check_classifications_validate
-
     # 最終チェックなのですでにエラーがある場合は実行しない
-   return if self.errors.messages.present?
+    return if errors.messages.present?
 
-    creator = CreaterSaveTargets.new(@user, modified_all_group_params, target_classificaitons)
-    invalid_kind_names = creator.create_all_group_target_classfications.each_with_object([]) do |(kind_name, classifications), kind_names| 
-      
-      invalid = classifications.any? do |classification| 
-        !classification.validate(:all_update)
-      end
-  
-      next unless invalid
-      kind_names << kind_name
-    end
+    validate_param = {
+      method_name_sym: :create_invalid_kind_names_of_classifications_validate,
+      base_error_message: 'バリデーションエラーが発生しました',
+      error_key: :params
+    }
 
+    check_by_validate_param(validate_param)
+  end
+
+  def check_by_validate_param(validate_param)
+    invalid_kind_names = @validator.send(validate_param[:method_name_sym])
     return if invalid_kind_names.blank?
 
     error_message = create_error_messages_with_kind_names(
-      'バリデーションエラーが発生しました', invalid_kind_names
+      validate_param[:base_error_message], invalid_kind_names
     )
-    errors.add(:params, error_message)
-  end
-
-  def invalid_params?(param)
-    unkonwn_param_names = param.keys - %w[name order_number id]
-    some_paramete_not_set = !(param.key?('id') && param.key?('name') && param.key?('order_number'))
-    some_paramete_not_set || unkonwn_param_names.present?
+    errors.add(validate_param[:error_key], error_message)
   end
 
   def target_classificaitons
-    @target_classificaitons = @target_classificaitons || fetch_target_classificaitons
+    @target_classificaitons ||= fetch_target_classificaitons
   end
-  
+
   def modified_all_group_params
-    @modified_all_group_params = @modified_all_group_params || create_modified_all_group_params
+    @modified_all_group_params ||= create_modified_all_group_params
   end
 
   def create_error_messages_with_kind_names(base_message, kind_names)
