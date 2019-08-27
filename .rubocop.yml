@@ -35,3 +35,5 @@ RSpec/ContextWording:
   Enabled: false #日本語を使うとwhen等は書かないので
 RSpec/MultipleExpectations:
   Max: 3 #1回だけexpectを実行するとは限らないが多すぎるのは弾きたいため
+RSpec/ImplicitSubject:
+  Enabled: false #is_expectedを自由に使いたいので
