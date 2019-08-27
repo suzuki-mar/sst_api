@@ -7,20 +7,25 @@ class SelfCareClassificationsForm
   validate :check_missing_group_names
   validate :check_invalid_params
   validate :check_classification_ids_of_not_registered
+  validate :check_not_exists_same_order_number
+  validate :check_classifications_validate
 
   def initialize(user, all_group_params)
     @user = user
     @all_group_params = all_group_params
   end
 
+  # TODO save on rollback if errorに変更する
   def save!
     raise SelfCareClassificationsForm::InvalidError, self unless validate
+    creator = CreaterSaveTargets.new(@user, modified_all_group_params, target_classificaitons)
+    group_classifications =  creator.create_all_group_target_classfications
 
-    target_classificaitons = fetch_target_classificaitons
-    modified_all_group_params = create_modified_all_group_params
-
-    saver = Saver.new(@user, modified_all_group_params, target_classificaitons)
-    saver.save_all_group_classfications
+    group_classifications.each do |kind_name, classifications|
+      classifications.each do |classification|
+        classification.save!
+      end
+    end
 
     true
   end
@@ -32,7 +37,6 @@ class SelfCareClassificationsForm
   end
 
   private
-
   def create_modified_all_group_params
     modified_all_group_params = {}
     @all_group_params.each do |kind_name, params|
@@ -87,13 +91,10 @@ class SelfCareClassificationsForm
 
   def check_classification_ids_of_not_registered
     registered_classification_ids = SelfCareClassification.where(user: @user).pluck(:id)
-    
-    invalid_kind_names = @all_group_params.each_with_object([]) do |(kind_name, params), invalid_kind_names| 
 
+    invalid_kind_names = @all_group_params.each_with_object([]) do |(kind_name, params), invalid_kind_names|
       ids = params.pluck('id').reject(&:blank?)
-       if (ids - registered_classification_ids).present?
-          invalid_kind_names << kind_name
-       end
+      invalid_kind_names << kind_name if (ids - registered_classification_ids).present?
     end
 
     return if invalid_kind_names.blank?
@@ -102,9 +103,7 @@ class SelfCareClassificationsForm
       '不正なIDが渡された項目があります', invalid_kind_names
     )
     errors.add(:params, error_message)
-
   end
-
 
   def check_invalid_params
     invalid_kind_names = @all_group_params.each_with_object([]) do |(kind_name, params), array|
@@ -120,10 +119,54 @@ class SelfCareClassificationsForm
     errors.add(:params, error_message)
   end
 
+  def check_not_exists_same_order_number
+    invalid_kind_names = @all_group_params.each_with_object([]) do |(kind_name, params), kind_names|
+      order_numbers = params.pluck('order_number')
+      exists_same_order_number = (order_numbers.count - order_numbers.uniq.count) > 0
+      kind_names << kind_name if exists_same_order_number
+    end
+
+    return if invalid_kind_names.blank?
+
+    error_message = create_error_messages_with_kind_names(
+      '同じ順番が設定されています', invalid_kind_names
+    )
+    errors.add(:params, error_message)
+  end
+
+  def check_classifications_validate
+
+    # 最終チェックなのですでにエラーがある場合は実行しない
+   return if self.errors.messages.present?
+   
+    creator = CreaterSaveTargets.new(@user, modified_all_group_params, target_classificaitons)
+    invalid_kind_names = creator.create_all_group_target_classfications.each_with_object([]) do |(kind_name, classifications), kind_names| 
+      
+      invalid = classifications.any?{|classification| !classification.validate}
+      next unless invalid
+      kind_names << kind_name
+    end
+
+    return if invalid_kind_names.blank?
+
+    error_message = create_error_messages_with_kind_names(
+      'バリデーションエラーが発生しました', invalid_kind_names
+    )
+    errors.add(:params, error_message)
+  end
+
   def invalid_params?(param)
     unkonwn_param_names = param.keys - %w[name order_number id]
     some_paramete_not_set = !(param.key?('id') && param.key?('name') && param.key?('order_number'))
     some_paramete_not_set || unkonwn_param_names.present?
+  end
+
+  def target_classificaitons
+    @target_classificaitons = @target_classificaitons || fetch_target_classificaitons
+  end
+  
+  def modified_all_group_params
+    @modified_all_group_params = @modified_all_group_params || create_modified_all_group_params
   end
 
   def create_error_messages_with_kind_names(base_message, kind_names)

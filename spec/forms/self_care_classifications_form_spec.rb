@@ -69,11 +69,33 @@ describe SelfCareClassificationsForm, type: :form do
         end
       end
 
+      context '同じ項目名で同じorder_numberが存在する場合' do
+        let(:params) do
+          {
+            'good' => [
+              { 'id' =>  '', 'name' => 'name1', 'order_number' => 1 },
+              { 'id' =>  '', 'name' => 'name1', 'order_number' => 1 }
+            ],
+
+            'normal' => [
+              { 'id' =>  '', 'name' => 'name1', 'order_number' => 2 }
+            ],
+
+            'bad' => []
+          }
+        end
+
+        it 'バリデーションエラーメッセージを取得できること' do
+          validate
+          expect(form.errors.messages[:params]).to eq(['同じ順番が設定されています:good'])
+        end
+      end
+
       context 'パラメーターに必要ではない項目がある場合' do
         let(:params) do
           {
-            'good' => [{ 'id' => '', 'name' => 'name1' }],
-            'normal' => [{ 'id' => '', 'order_number' => 2 }],
+            'good' => [{ 'id' => '', 'name' => 'name1', 'order_number' => 1 }],
+            'normal' => [{ 'id' => '',  'name' => 'name1', 'order_number' => 2 }],
             'bad' => [
               { 'id' => '', 'name' => 'name1', 'order_number' => 2, 'unknow_param': 'hoge' }
             ]
@@ -82,7 +104,7 @@ describe SelfCareClassificationsForm, type: :form do
 
         it 'バリデーションメッセージを取得できること' do
           validate
-          expect(form.errors.messages[:params]).to eq(['不正なパラメーターが渡された項目があります:good,normal,bad'])
+          expect(form.errors.messages[:params]).to eq(['不正なパラメーターが渡された項目があります:bad'])
         end
       end
 
@@ -105,6 +127,26 @@ describe SelfCareClassificationsForm, type: :form do
           expect(form.errors.messages[:params]).to eq(['不正なIDが渡された項目があります:good,normal'])
         end
       end
+
+      context 'id以外の要素が空白の場合' do
+        let(:params) do
+          {
+            'good' => [
+              { 'id' => '', 'name' => '', 'order_number' => 2 }
+            ],
+            'normal' => [],
+            'bad' => []
+          }
+        end
+
+        it 'バリデーションメッセージを取得できること' do
+          validate
+          expect(form.errors.messages[:params]).to eq(['バリデーションエラーが発生しました:good'])
+        end
+      end
+
+      pending 'order_numberが全部入力されているかの確認'
+
     end
   end
 
@@ -120,8 +162,8 @@ describe SelfCareClassificationsForm, type: :form do
             ],
 
             'normal' => [
-              { 'id' =>  '',  'name' =>  'name1',  'order_number' =>  4 },
-              { 'id' =>  '',  'name' =>  'name2',  'order_number' =>  2 }
+              { 'id' =>  '',  'name' =>  'name1',  'order_number' =>  '4' },
+              { 'id' =>  '',  'name' =>  'name2',  'order_number' =>  '2' }
             ],
 
             'bad' => []
@@ -194,9 +236,7 @@ describe SelfCareClassificationsForm, type: :form do
           expect { save! }.to raise_error(SelfCareClassificationsForm::InvalidError)
         end
       end
-
-      pending '同じ項目名で同じorder_numberが存在する場合'
-      pending '保存に1つでも失敗した場合に全件保存されないこと'
     end
+
   end
 end

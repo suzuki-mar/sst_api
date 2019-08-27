@@ -9,6 +9,11 @@ RSpec.describe SelfCareClassification, type: :model do
     it { is_expected.to belong_to(:user) }
   end
 
+  describe 'Validation' do
+    subject { build(:self_care_classification) }
+    it { is_expected.to validate_presence_of(:name) }
+  end
+
   describe 'enum' do
     subject { build(:self_care_classification) }
 
