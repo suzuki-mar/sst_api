@@ -128,7 +128,7 @@ describe SelfCareClassificationsForm, type: :form do
         end
       end
 
-      context 'id以外の要素が空白の場合' do
+      context 'SelfCareClassificationのバリデーションに失敗するものがある場合' do
         let(:params) do
           {
             'good' => [
@@ -144,8 +144,6 @@ describe SelfCareClassificationsForm, type: :form do
           expect(form.errors.messages[:params]).to eq(['バリデーションエラーが発生しました:good'])
         end
       end
-
-      pending 'order_numberが全部入力されているかの確認'
 
     end
   end
@@ -204,7 +202,7 @@ describe SelfCareClassificationsForm, type: :form do
         end
 
         let(:good_classification) do
-          create(:self_care_classification, user: user, order_number: 5, kind: :good)
+          create(:self_care_classification, user: user, order_number: 1, kind: :good)
         end
         let(:normal_classification) do
           create(:self_care_classification, user: user, order_number: 5, kind: :normal)

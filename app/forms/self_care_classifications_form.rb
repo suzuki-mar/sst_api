@@ -23,7 +23,7 @@ class SelfCareClassificationsForm
 
     group_classifications.each do |kind_name, classifications|
       classifications.each do |classification|
-        classification.save!
+        classification.save!(context: :all_update)
       end
     end
 
@@ -138,11 +138,14 @@ class SelfCareClassificationsForm
 
     # 最終チェックなのですでにエラーがある場合は実行しない
    return if self.errors.messages.present?
-   
+
     creator = CreaterSaveTargets.new(@user, modified_all_group_params, target_classificaitons)
     invalid_kind_names = creator.create_all_group_target_classfications.each_with_object([]) do |(kind_name, classifications), kind_names| 
       
-      invalid = classifications.any?{|classification| !classification.validate}
+      invalid = classifications.any? do |classification| 
+        !classification.validate(:all_update)
+      end
+  
       next unless invalid
       kind_names << kind_name
     end
