@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-## SelfCareClassificationsFormからしか使われないことを想定している
+# SelfCareClassificationsFormからしか使われないことを想定している
 
 class SelfCareClassificationsForm
-  class Validator
+  class ValidateExecutor
     def initialize(user, all_group_params, all_group_target_classfications)
       @user = user
       @all_group_params = all_group_params

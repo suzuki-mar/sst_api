@@ -11,7 +11,7 @@ class SelfCareClassificationsForm
     @all_group_params = all_group_params
     @creator = CreaterSaveTargets.new(user, all_group_sorted_params, target_classificaitons)
     @all_group_target_classfications = @creator.create_all_group_target_classfications
-    @validator = Validator.new(user, @all_group_params, @all_group_target_classfications)
+    @validate_executor = ValidateExecutor.new(user, @all_group_params, @all_group_target_classfications)
   end
 
   def save!
@@ -116,9 +116,9 @@ class SelfCareClassificationsForm
 
   def check_by_validate_param(validate_param)
     method_name = validate_param[:method_name_sym]
-    raise StandardError, "#{method_name}を実装してください" unless @validator.respond_to?(method_name)
+    raise StandardError, "#{method_name}を実装してください" unless @validate_executor.respond_to?(method_name)
 
-    invalid_kind_names = @validator.send(method_name)
+    invalid_kind_names = @validate_executor.send(method_name)
     return if invalid_kind_names.blank?
 
     error_message = create_error_messages_with_kind_names(
