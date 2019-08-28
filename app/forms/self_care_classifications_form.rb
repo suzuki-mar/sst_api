@@ -9,7 +9,7 @@ class SelfCareClassificationsForm
 
   def initialize(user, all_group_params)
     @all_group_params = all_group_params
-    @creator = CreaterSaveTargets.new(user, modified_all_group_params, target_classificaitons)
+    @creator = CreaterSaveTargets.new(user, all_group_sorted_params, target_classificaitons)
     @all_group_target_classfications = @creator.create_all_group_target_classfications
     @validator = Validator.new(user, @all_group_params, @all_group_target_classfications)
   end
@@ -34,17 +34,17 @@ class SelfCareClassificationsForm
 
   private
 
-  def create_modified_all_group_params
-    modified_all_group_params = {}
+  def create_all_group_sorted_params
+    all_group_sorted_params = {}
     @all_group_params.each do |kind_name, params|
-      modified_all_group_params[kind_name] = if params.empty?
+      all_group_sorted_params[kind_name] = if params.empty?
                                                []
                                              else
                                                create_modified_params(params)
                                              end
     end
 
-    modified_all_group_params
+    all_group_sorted_params
   end
 
   def create_modified_params(params)
@@ -131,8 +131,8 @@ class SelfCareClassificationsForm
     @target_classificaitons ||= fetch_target_classificaitons
   end
 
-  def modified_all_group_params
-    @modified_all_group_params ||= create_modified_all_group_params
+  def all_group_sorted_params
+    @modified_all_group_params ||= create_all_group_sorted_params
   end
 
   def create_error_messages_with_kind_names(base_message, kind_names)
