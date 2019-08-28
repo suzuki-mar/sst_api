@@ -10,7 +10,6 @@ class SelfCareClassificationsForm
   def initialize(user, all_group_params)
     @user = user
     @all_group_params = all_group_params
-
     @creator = CreaterSaveTargets.new(@user, modified_all_group_params, target_classificaitons)
     @all_group_target_classfications = @creator.create_all_group_target_classfications
 
@@ -90,6 +89,11 @@ class SelfCareClassificationsForm
       method_name_sym: :create_invalid_kind_names_of_not_exists_same_order_number,
       base_error_message: '同じ順番が設定されています',
       error_key: :params
+    },
+    {
+      method_name_sym: :create_invalid_kind_names_of_not_exists_same_name,
+      base_error_message: '同じ名前が設定されています',
+      error_key: :params
     }
   ].freeze
 
@@ -113,7 +117,10 @@ class SelfCareClassificationsForm
   end
 
   def check_by_validate_param(validate_param)
-    invalid_kind_names = @validator.send(validate_param[:method_name_sym])
+    method_name = validate_param[:method_name_sym]
+    raise StandardError.new("#{method_name.to_s}を実装してください") unless @validator.respond_to?(method_name)
+
+    invalid_kind_names = @validator.send(method_name)
     return if invalid_kind_names.blank?
 
     error_message = create_error_messages_with_kind_names(

@@ -9,11 +9,30 @@ RSpec.describe SelfCareClassification, type: :model do
     it { is_expected.to belong_to(:user) }
   end
 
+  describe 'scope' do
+    let(:user){create(:user)}
+    before :each do
+      create(:self_care_classification, user: user, kind: :good)
+      create(:self_care_classification, user: user, kind: :good)
+      create(:self_care_classification, user: user, kind: :bad)
+    end
+    
+    describe 'kind_by' do
+      it '指定したkindを取得できる' do
+        expect(SelfCareClassification.kind_by(:good).count).to eq(2)
+      end
+      it '不正なパラメーターが渡されたらArugmetErrorになる' do
+        expect { SelfCareClassification.kind_by(:unknown) }.to raise_error(ArgumentError)
+      end
+    end
+  end
+  
   describe 'Validation' do
     subject { build(:self_care_classification) }
     it { is_expected.to validate_presence_of(:name) }
     it { is_expected.to validate_presence_of(:order_number) }
-    
+    it { is_expected.to validate_uniqueness_of(:name).scoped_to([:user_id, :kind]) }
+
     describe 'order_numberの重複チェック' do
       let(:user){create(:user)}
       before do

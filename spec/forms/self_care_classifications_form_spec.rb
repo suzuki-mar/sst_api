@@ -74,7 +74,7 @@ describe SelfCareClassificationsForm, type: :form do
           {
             'good' => [
               { 'id' =>  '', 'name' => 'name1', 'order_number' => 1 },
-              { 'id' =>  '', 'name' => 'name1', 'order_number' => 1 }
+              { 'id' =>  '', 'name' => 'name2', 'order_number' => 1 }
             ],
 
             'normal' => [
@@ -88,6 +88,28 @@ describe SelfCareClassificationsForm, type: :form do
         it 'バリデーションエラーメッセージを取得できること' do
           validate
           expect(form.errors.messages[:params]).to eq(['同じ順番が設定されています:good'])
+        end
+      end
+
+      context '同じ項目名で同じ名前が存在する場合' do
+        let(:params) do
+          {
+            'good' => [
+              { 'id' =>  '', 'name' => 'name1', 'order_number' => 1 },
+              { 'id' =>  '', 'name' => 'name1', 'order_number' => 2 }
+            ],
+
+            'normal' => [
+              { 'id' =>  '', 'name' => 'name1', 'order_number' => 2 }
+            ],
+
+            'bad' => []
+          }
+        end
+
+        it 'バリデーションエラーメッセージを取得できること' do
+          validate
+          expect(form.errors.messages[:params]).to eq(['同じ名前が設定されています:good'])
         end
       end
 
@@ -174,8 +196,7 @@ describe SelfCareClassificationsForm, type: :form do
 
         it 'グループごとに作成できていること' do
           save!
-          # TODO: scopeを設定する
-          expect(SelfCareClassification.where(kind: :good).count).to eq(1)
+          expect(SelfCareClassification.kind_by(:good).count).to eq(1)
         end
 
         it 'order_numberを正しく設定できていること' do
@@ -191,7 +212,7 @@ describe SelfCareClassificationsForm, type: :form do
             'good' => [
               { 'id' =>  '',  'name' => 'name1', 'order_number' => '1' },
               { 'id' =>  '', 'name' => 'name2', 'order_number' => '5' },
-              { 'id' => good_classification.id, 'name' => 'name2',  'order_number' => '4' }
+              { 'id' => good_classification.id, 'name' => 'name3',  'order_number' => '4' }
             ],
             'normal' => [
               { 'id' => normal_classification.id, 'name' => 'name1', 'order_number' => '1' }
@@ -210,9 +231,47 @@ describe SelfCareClassificationsForm, type: :form do
         it 'グループごとに作成できていること' do
           save!
           # TODO: scopeを設定する
-          expect(SelfCareClassification.where(kind: :good).count).to eq(3)
+          expect(SelfCareClassification.kind_by(:good).count).to eq(3)
         end
       end
+
+      context 'すでに登録されているがデータがあるがパラメーターにそのデータがない場合' do
+        let(:params) do
+          {
+            'good' => [
+              { 'id' =>  '',  'name' => 'name2', 'order_number' => 1 }
+            ],
+
+            'normal' => [
+              { 'id' =>  '',  'name' =>  'name1',  'order_number' =>  '4' },
+              { 'id' =>  '',  'name' =>  'name2',  'order_number' =>  '2' }
+            ],
+
+            'bad' => []
+          }
+        end
+
+        before :each do
+          create(:self_care_classification, user:user, kind: :good, name: 'name1')
+        end
+
+        it 'パラメーター数作成できること' do
+          save!
+          expect(SelfCareClassification.where(name: 'name1').count).to eq(2)
+        end
+
+        it 'グループごとに作成できていること' do
+          save!
+          expect(SelfCareClassification.kind_by(:good).count).to eq(2)
+        end
+
+        it 'order_numberを正しく設定できていること' do
+          save!
+          order_numbers = SelfCareClassification.where(kind: :normal).pluck(:order_number)
+          expect(order_numbers).to eq([1, 2])
+        end
+      end
+
     end
 
     context 'パラメーターがエラーの場合' do

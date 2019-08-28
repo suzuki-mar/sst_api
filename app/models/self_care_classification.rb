@@ -3,12 +3,17 @@
 class SelfCareClassification < ApplicationRecord
   belongs_to :user
 
-  validates :name, presence: true
+  validates :name, presence: true, uniqueness: { scope: [:user_id, :kind] }
   # ユニークかはメソッドでチェックをする
   validates :order_number, presence: true
   validate :check_same_order_number
 
   enum kind: {good: 1, normal: 2,  bad: 3}
+
+  scope :kind_by, -> kind {
+    raise ArgumentError.new('kindの値を渡しください') unless kinds.keys.include?(kind.to_s)
+    where(kind: kind)
+  }
 
   private
 
