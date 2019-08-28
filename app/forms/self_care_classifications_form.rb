@@ -10,7 +10,7 @@ class SelfCareClassificationsForm
   def initialize(user, all_group_params)
     @all_group_params = all_group_params
     @creator = CreaterSaveTargets.new(user, all_group_sorted_params, target_classificaitons)
-    @all_group_target_classfications = @creator.create_all_group_target_classfications
+    @all_group_target_classfications = @creator.create
     @validate_executor = ValidateExecutor.new(user, @all_group_params, @all_group_target_classfications)
   end
 

@@ -10,7 +10,7 @@ class SelfCareClassificationsForm
       @target_classificaitons = target_classificaitons
     end
 
-    def create_all_group_target_classfications
+    def create
       grouped_targets = @all_group_params.each_with_object({}) do |(kind_name, params), targets|
         next if params.empty?
 
