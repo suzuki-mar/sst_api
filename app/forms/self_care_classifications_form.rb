@@ -8,12 +8,10 @@ class SelfCareClassificationsForm
   validate :check_classifications_validate
 
   def initialize(user, all_group_params)
-    @user = user
     @all_group_params = all_group_params
-    @creator = CreaterSaveTargets.new(@user, modified_all_group_params, target_classificaitons)
+    @creator = CreaterSaveTargets.new(user, modified_all_group_params, target_classificaitons)
     @all_group_target_classfications = @creator.create_all_group_target_classfications
-
-    @validator = Validator.new(@user, @all_group_params, @all_group_target_classfications)
+    @validator = Validator.new(user, @all_group_params, @all_group_target_classfications)
   end
 
   def save!
