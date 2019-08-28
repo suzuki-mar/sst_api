@@ -1,5 +1,6 @@
-class ResultResponse
+# frozen_string_literal: true
 
+class ResultResponse
   def initialize(message)
     @message = message
   end
@@ -9,6 +10,4 @@ class ResultResponse
       message: @message
     }.to_json
   end
-
-
 end

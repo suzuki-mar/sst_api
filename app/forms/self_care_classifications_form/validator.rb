@@ -50,7 +50,6 @@ class SelfCareClassificationsForm
       end
     end
 
-
     def create_invalid_kind_names_of_classifications_validate
       # 一時的に変数名を短くするため
       target_classfications = @all_group_target_classfications
@@ -60,9 +59,9 @@ class SelfCareClassificationsForm
         end
 
         next unless invalid
+
         kind_names << kind_name
       end
-
     end
 
     private

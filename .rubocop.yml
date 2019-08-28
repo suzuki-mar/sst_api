@@ -27,6 +27,7 @@ Metrics/LineLength:
 Metrics/BlockLength:
   Exclude:
     - "spec/**/*" #specはブロックが長くなる
+    - "app/api/**/*" #APIはGrapeを使用するためにブロックが長くなってしまう
 Metrics/ClassLength:
   Max: 125 #デフォルト値の1.25倍で頑張りたい
 Style/Documentation:
@@ -37,5 +38,7 @@ RSpec/ContextWording:
   Enabled: false #日本語を使うとwhen等は書かないので
 RSpec/MultipleExpectations:
   Max: 3 #1回だけexpectを実行するとは限らないが多すぎるのは弾きたいため
+RSpec/ExampleLength:
+  Max: 8 #ある程度複雑なテストだと5行以上になってしまうことが考えられるため
 RSpec/ImplicitSubject:
   Enabled: false #is_expectedを自由に使いたいので

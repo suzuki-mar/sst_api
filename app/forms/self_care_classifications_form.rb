@@ -118,7 +118,7 @@ class SelfCareClassificationsForm
 
   def check_by_validate_param(validate_param)
     method_name = validate_param[:method_name_sym]
-    raise StandardError.new("#{method_name.to_s}を実装してください") unless @validator.respond_to?(method_name)
+    raise StandardError, "#{method_name}を実装してください" unless @validator.respond_to?(method_name)
 
     invalid_kind_names = @validator.send(method_name)
     return if invalid_kind_names.blank?

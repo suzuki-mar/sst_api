@@ -3,15 +3,16 @@
 class SelfCareClassification < ApplicationRecord
   belongs_to :user
 
-  validates :name, presence: true, uniqueness: { scope: [:user_id, :kind] }
+  validates :name, presence: true, uniqueness: { scope: %i[user_id kind] }
   # ユニークかはメソッドでチェックをする
   validates :order_number, presence: true
   validate :check_same_order_number
 
-  enum kind: {good: 1, normal: 2,  bad: 3}
+  enum kind: { good: 1, normal: 2, bad: 3 }
 
-  scope :kind_by, -> kind {
-    raise ArgumentError.new('kindの値を渡しください') unless kinds.keys.include?(kind.to_s)
+  scope :kind_by, lambda { |kind|
+    raise ArgumentError, 'kindの値を渡しください' unless kinds.keys.include?(kind.to_s)
+
     where(kind: kind)
   }
 
@@ -22,14 +23,9 @@ class SelfCareClassification < ApplicationRecord
     return if errors.messages.present?
     return if validation_context == :all_update
 
-    relation = SelfCareClassification.where(user_id: self.user_id, order_number: self.order_number)
-    unless  new_record?
-      relation = relation.where.not(id: self.id)
-    end
+    relation = SelfCareClassification.where(user_id: user_id, order_number: order_number)
+    relation = relation.where.not(id: id) unless new_record?
 
-    if relation.exists?
-      errors.add(:order_number, 'すでに同じorder_numberが登録されています')
-    end
+    errors.add(:order_number, 'すでに同じorder_numberが登録されています') if relation.exists?
   end
-
 end

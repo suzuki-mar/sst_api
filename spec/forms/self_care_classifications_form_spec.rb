@@ -251,8 +251,8 @@ describe SelfCareClassificationsForm, type: :form do
           }
         end
 
-        before :each do
-          create(:self_care_classification, user:user, kind: :good, name: 'name1')
+        before do
+          create(:self_care_classification, user: user, kind: :good, name: 'name1')
         end
 
         it 'パラメーター数作成できること' do
@@ -271,7 +271,6 @@ describe SelfCareClassificationsForm, type: :form do
           expect(order_numbers).to eq([1, 2])
         end
       end
-
     end
 
     context 'パラメーターがエラーの場合' do

@@ -17,12 +17,12 @@ describe 'self_care_classificaiton', type: :request do
   end
 
   describe 'POST /v1/self_care_classifications/group' do
-    let!(:user){create(:user)}
-    
     subject(:post_group) do
-      post '/v1/self_care_classifications/group', params: { input_params: params } 
+      post '/v1/self_care_classifications/group', params: { input_params: params }
     end
-    
+
+    let!(:user) { create(:user) }
+
     context '新規作成のみ' do
       let(:params) do
         [{
@@ -41,15 +41,15 @@ describe 'self_care_classificaiton', type: :request do
 
       it 'レスポンスを取得できること' do
         post_group
-        
+
         expect(response.status).to eq 204
         parsed_api_respone = JSON.parse(response.body)
-        expect(parsed_api_respone).to eq({"message"=>"success"})
+        expect(parsed_api_respone).to eq('message' => 'success')
       end
 
       it '作成できていること' do
         post_group
-        
+
         expect(SelfCareClassification.kind_by(:normal).count).to eq(2)
       end
     end
@@ -70,17 +70,17 @@ describe 'self_care_classificaiton', type: :request do
 
       it 'エラーレスポンスを取得できること' do
         post_group
-        
+
         expect(response.status).to eq 400
         parsed_api_respone = JSON.parse(response.body)
-        expected_message = "kind_name:足りない項目名があります:bad\n" +
-        "params:同じ順番が設定されています:normal,同じ名前が設定されています:normal"
+        expected_message = "kind_name:足りない項目名があります:bad\n" \
+                           'params:同じ順番が設定されています:normal,同じ名前が設定されています:normal'
         expect(parsed_api_respone['error']).to eq(expected_message)
       end
 
       it '一部だけ保存に成功していないこと' do
         post_group
-        
+
         expect(SelfCareClassification.count).to eq(0)
       end
     end
@@ -90,7 +90,7 @@ describe 'self_care_classificaiton', type: :request do
         [{
           'good' => [
             { 'id' =>  '',  'name' => 'name1', 'order_number' => 1 },
-            { 'id' =>  classification.id,  'name' => 'name2', 'order_number' => 2 }
+            { 'id' =>  classification.id, 'name' => 'name2', 'order_number' => 2 }
           ],
 
           'normal' => [
@@ -100,23 +100,21 @@ describe 'self_care_classificaiton', type: :request do
           'bad' => []
         }]
       end
-      let(:classification){create(:self_care_classification, kind: :good, user: user)}
+      let(:classification) { create(:self_care_classification, kind: :good, user: user) }
 
       it 'エラーレスポンスを取得できること' do
         post_group
-       
-        parsed_api_respone = JSON.parse(response.body)
+
         expect(response.status).to eq 204
         parsed_api_respone = JSON.parse(response.body)
-        expect(parsed_api_respone).to eq({"message"=>"success"})
+        expect(parsed_api_respone).to eq('message' => 'success')
       end
 
       it '保存に成功していないこと' do
         post_group
-        
+
         expect(SelfCareClassification.kind_by(:good).count).to eq(2)
       end
     end
-
   end
 end
