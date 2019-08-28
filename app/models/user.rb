@@ -3,6 +3,7 @@
 class User < ApplicationRecord
   # userが存在しなくなっても,self_care_classificationから参照する可能性があるので削除はしない
   has_many :self_cares, dependent: :nullify
+  has_many :self_care_classifications, dependent: :nullify
 
   validates :name, presence: true
 

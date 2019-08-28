@@ -2,6 +2,7 @@
 
 module V1
   class Root < Grape::API
+    helpers ApiHelpers
     version :v1
     format :json
 

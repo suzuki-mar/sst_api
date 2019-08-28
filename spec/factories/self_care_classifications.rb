@@ -2,8 +2,9 @@
 
 FactoryBot.define do
   factory :self_care_classification do
-    name { 'MyString' }
-    order_number { 1 }
-    kind { 1 }
+    user
+    sequence(:name) { |n| "classification#{n}" }
+    sequence(:order_number, &:to_s)
+    kind { :bad }
   end
 end

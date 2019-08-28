@@ -11,6 +11,53 @@ module V1
         present @classifications,
                 with: V1::Entities::SelfCareClassificationEntity
       end
+
+      helpers do
+        def create_form(_input_param)
+          update_params = {}
+          # 空のハッシュを送信すると空文字がセットされる
+          params[:input_params][0].each do |kind_name, params|
+            update_params[kind_name] = params[0].present? ? params : []
+          end
+
+          update_params = create_update_param_of_casted_param(update_params)
+          SelfCareClassificationsForm.new(current_user, update_params)
+        end
+
+        def create_update_param_of_casted_param(update_params)
+          update_params.each do |_kind_name, params|
+            next if params.blank?
+
+            params.each do |param|
+              param['id'] = param['id'].present? ? param['id'].to_i : ''
+              param['order_number'] = param['order_number'].to_i
+            end
+          end
+
+          update_params
+        end
+      end
+
+      desc 'セルフケア分類をまとめて設定する 戻り値ResultResponse'
+      params do
+        desc = '入力データ TODO パラメーターの詳細をドキュメントに書く'
+        requires :input_params, type: Array, desc: desc
+      end
+      post '/group' do
+        form = create_form(params[:input_params])
+
+        unless form.validate
+          error_message = create_error_message_from_model(form)
+          error!(error_message, 400)
+          return
+        end
+
+        form.save!
+        status 204
+
+        result_response = ResultResponse.new('success')
+        present result_response.to_respnose
+      end
     end
   end
 end

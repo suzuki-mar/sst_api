@@ -7,6 +7,7 @@ RSpec.describe User, type: :model do
     subject { build(:user) }
 
     it { is_expected.to have_many(:self_cares).dependent(:nullify) }
+    it { is_expected.to have_many(:self_care_classifications).dependent(:nullify) }
   end
 
   describe 'Validation' do
