@@ -1,4 +1,6 @@
-module Api_Helpers 
+# frozen_string_literal: true
+
+module ApiHelpers
   # 1人のユーザーしか使わない想定
   def current_user
     User.last

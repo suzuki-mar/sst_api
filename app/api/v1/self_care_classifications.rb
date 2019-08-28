@@ -36,7 +36,6 @@ module V1
 
           update_params
         end
-
       end
 
       desc 'セルフケア分類をまとめて設定する 戻り値ResultResponse'
