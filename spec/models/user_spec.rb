@@ -77,8 +77,8 @@ RSpec.describe User, type: :model do
 
     let(:log_dates) do
       [
-        DateTime.now,
         DateTime.now - 6.days,
+        DateTime.now,
         DateTime.now - 7.days
       ]
     end
@@ -90,10 +90,12 @@ RSpec.describe User, type: :model do
     end
 
     it '今週1週間分のセルフケアを取得する' do
-      this_week_self_cares = user.self_cares_of_this_week
+      this_week_self_cares = user.self_cares_of_recent
       expect(this_week_self_cares.count).to eq(2)
+    end
 
-      # 古い日付順にソートされている
+    it ' 新しい日付順にソートされていること' do
+      this_week_self_cares = user.self_cares_of_recent
       expect(this_week_self_cares[0].log_date.day).to eq(log_dates[1].day)
       expect(this_week_self_cares[1].log_date.day).to eq(log_dates[0].day)
     end

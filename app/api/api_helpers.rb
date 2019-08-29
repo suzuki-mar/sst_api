@@ -3,7 +3,7 @@
 module ApiHelpers
   # 1人のユーザーしか使わない想定
   def current_user
-    User.last
+    User.first
   end
 
   def create_error_message_from_model(model)

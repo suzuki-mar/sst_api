@@ -18,10 +18,10 @@ class User < ApplicationRecord
     self_cares.where(log_date: search_range).count >= expectation_count
   end
 
-  def self_cares_of_this_week
+  def self_cares_of_recent
     this_week_start_day = Time.zone.now - 6.days
     search_range = this_week_start_day.beginning_of_day..DateTime.now.end_of_day
-    self_cares.where(log_date: search_range).order('log_date ASC')
+    self_cares.where(log_date: search_range).order('log_date DESC')
   end
 
   def self_cares_of_this_month
