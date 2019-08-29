@@ -127,4 +127,30 @@ RSpec.describe User, type: :model do
       expect(this_month_self_cares[1].log_date.day).to eq(log_dates[0].day)
     end
   end
+
+  describe 'fetch_grouping_self_care_classifications' do
+    let(:user) { create(:user) }
+
+    before do
+      create(:self_care_classification, :good, name: 'name2', user: user, order_number: 2)
+      create(:self_care_classification,  :good, name: 'name1', user: user, order_number: 1)
+
+      create(:self_care_classification,  :normal, user: user, order_number: 1)
+    end
+
+    it 'kind毎にgroupingかされていること' do
+      grouping_classifications = user.fetch_grouping_self_care_classifications
+      expect(grouping_classifications.keys).to eq(%w[good normal bad])
+    end
+
+    it 'order_number通りに取得できていること' do
+      good_classifications = user.fetch_grouping_self_care_classifications['good']
+      expect(good_classifications.pluck('name')).to eq(%w[name1 name2])
+    end
+
+    it 'データがないkindの場合は空の配列ができていること' do
+      bad_classifications = user.fetch_grouping_self_care_classifications['bad']
+      expect(bad_classifications).to eq([])
+    end
+  end
 end

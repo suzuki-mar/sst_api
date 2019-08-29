@@ -51,6 +51,12 @@ RSpec.describe SelfCareClassification, type: :model do
           expect(classification.validate).to be_truthy
         end
 
+        it '違うkindで同じorder_numberの場合はバリデーションエラーにならない' do
+          classification = build(:self_care_classification,
+                                 :bad, order_number: 1, user: user)
+          expect(classification.validate).to be_truthy
+        end
+
         it '同じユーザーの同じkindで同じorder_numberの場合はエラーとなる' do
           classification = build(:self_care_classification,
                                  kind: :good, user: user, order_number: 1)

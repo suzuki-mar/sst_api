@@ -16,6 +16,33 @@ describe 'self_care_classificaiton', type: :request do
     end
   end
 
+  describe 'GET /v1/self_care_classifications/group' do
+    subject(:get_group) do
+      get '/v1/self_care_classifications/group'
+    end
+
+    let(:user) { create(:user) }
+
+    before do
+      create(:self_care_classification, :good, name: 'name2', user: user, order_number: 2)
+      create(:self_care_classification,  :good, name: 'name1', user: user, order_number: 1)
+
+      create(:self_care_classification,  :normal, user: user, order_number: 1)
+    end
+
+    it 'レスポンスを取得できること' do
+      get_group
+      expect(response.status).to eq 200
+    end
+
+    it 'グルーピングされている分類を取得できること' do
+      get_group
+
+      parsed_api_respone = JSON.parse(response.body)
+      expect(parsed_api_respone['good'].pluck('name')).to eq(%w[name1 name2])
+    end
+  end
+
   describe 'POST /v1/self_care_classifications/group' do
     subject(:post_group) do
       post '/v1/self_care_classifications/group', params: { input_params: params }

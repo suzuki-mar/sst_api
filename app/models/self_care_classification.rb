@@ -16,6 +16,8 @@ class SelfCareClassification < ApplicationRecord
     where(kind: kind)
   }
 
+  scope :ordered, -> { order('order_number ASC') }
+
   private
 
   def check_same_order_number
@@ -23,9 +25,19 @@ class SelfCareClassification < ApplicationRecord
     return if errors.messages.present?
     return if validation_context == :all_update
 
-    relation = SelfCareClassification.where(user_id: user_id, order_number: order_number)
-    relation = relation.where.not(id: id) unless new_record?
+    message = 'すでに同じorder_numberが登録されています'
+    errors.add(:order_number, message) if SelfCareClassification.exists_same_order_number?(self)
+  end
 
-    errors.add(:order_number, 'すでに同じorder_numberが登録されています') if relation.exists?
+  class << self
+    def exists_same_order_number?(record)
+      relation = where(
+        user_id: record.user_id, order_number: record.order_number, kind: record. kind
+      )
+
+      relation = relation.where.not(id: record.id) unless record.new_record?
+
+      relation.exists?
+    end
   end
 end

@@ -13,6 +13,28 @@ module V1
       end
 
       helpers do
+        def create_grouping_entities(grouping_classificaitons)
+          grouping_entities = {}
+          grouping_classificaitons.each do |kind_name, classifications|
+            grouping_entities[kind_name] = []
+            classifications.each do |classificaiton|
+              entity = V1::Entities::SelfCareClassificationEntity.new(classificaiton)
+              grouping_entities[kind_name] << entity
+            end
+          end
+
+          grouping_entities
+        end
+      end
+
+      desc 'セルフケア分類をまとめて取得する'
+      get '/group' do
+        grouping_self_care_classificaitons = current_user.fetch_grouping_self_care_classifications
+        grouping_entities = create_grouping_entities(grouping_self_care_classificaitons)
+        present grouping_entities
+      end
+
+      helpers do
         def create_form(_input_param)
           update_params = {}
           # 空のハッシュを送信すると空文字がセットされる
