@@ -6,5 +6,17 @@ FactoryBot.define do
     sequence(:name) { |n| "classification#{n}" }
     sequence(:order_number, &:to_s)
     kind { :bad }
+
+    trait :good do
+      kind { :good }
+    end
+
+    trait :normal do
+      kind { :normal }
+    end
+
+    trait :bad do
+      kind { :bad }
+    end
   end
 end

@@ -30,4 +30,19 @@ class User < ApplicationRecord
     search_range = start_date.beginning_of_day..end_date
     self_cares.where(log_date: search_range).order('log_date ASC')
   end
+
+  def fetch_grouping_self_care_classifications
+    classifications = self_care_classifications.order('kind ASC').ordered
+
+    grouping_classifications = {}
+    SelfCareClassification.kinds.each do |name, _value|
+      grouping_classifications[name] = []
+    end
+
+    classifications.each do |classification|
+      grouping_classifications[classification.kind] << classification
+    end
+
+    grouping_classifications
+  end
 end
