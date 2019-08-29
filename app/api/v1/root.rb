@@ -7,6 +7,7 @@ module V1
     format :json
 
     mount V1::SelfCareClassifications
+    mount V1::SelfCares
 
     add_swagger_documentation(
       doc_version: '0.0.1',
