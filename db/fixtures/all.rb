@@ -20,4 +20,3 @@ SelfCare.seed do |s|
   s.reason = '順調にタスクが進んでいるため'
   s.point = 2
 end
-
