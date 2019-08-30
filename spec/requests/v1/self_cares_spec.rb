@@ -2,7 +2,103 @@
 
 require 'rails_helper'
 
-describe 'self_care_classificaiton', type: :request do
+describe 'self_care_classification', type: :request do
+  describe 'POST /v1/self_cares' do
+    let(:user){create(:user)}
+    let(:classification){create(:self_care_classification, user: user)}
+
+    subject { post '/v1/self_cares', params: { input_params: [param] }}
+
+    context 'パラメーターが正常の場合' do
+      let(:param) do 
+        param = attributes_for(:self_care)
+        param[:user_id] = user.id 
+        param[:self_care_classification_id] = classification.id 
+        
+        param
+      end
+
+      it 'レスポンスが返ること' do
+        subject
+
+        expect(response.status).to eq 204
+      end
+
+      it '作成できること' do
+        expect { subject }.to change { SelfCare.count }.from(0).to(1)
+      end
+
+    end
+
+    context 'パラメーターが間違っている場合' do
+
+      shared_context :presence_validation do |type, expected|
+        let(:actual) { build(factory, attribute => value) }
+      
+        context (type == :nil ? 'nil' : 'empty') do
+          let(:value) { type == :nil ? nil : '' }
+          it { expect(actual).to (expected ? be_valid : be_invalid) }
+        end
+      end
+
+      shared_context "パラメーターが間違っている場合の対応ができていること"  do |expected_messge| 
+        it 'エラーになっていること' do
+          subject
+  
+          expect(response.status).to eq 400
+        end
+        
+        it '保存ができていないこと' do
+          expect(SelfCare.count).to eq(0)
+        end
+
+        it 'エラーメッセージを取得できること' do
+          subject
+
+          parsed_api_respone = JSON.parse(response.body)
+          expect(parsed_api_respone['error']).to eq(expected_messge)
+        end
+      end
+
+      context '不正なパラメーターの場合' do
+        let(:param) do 
+          param = attributes_for(:self_care)
+          param.delete(:reason)
+          param[:user_id] = user.id 
+          param[:self_care_classification_id] = classification.id 
+          param
+        end
+
+        include_context 'パラメーターが間違っている場合の対応ができていること',  "reason:can't be blank"
+      end
+
+      context '存在しないclassificationIDを指定した場合' do
+        let(:param) do 
+          param = attributes_for(:self_care)
+          param[:user_id] = user.id 
+          param[:self_care_classification_id] = 999999999999999999
+          param
+        end
+        
+        include_context 'パラメーターが間違っている場合の対応ができていること',  "存在しない分類に登録しようとしました"
+      end
+      
+      context '別ユーザーの分類を登録しようとした場合' do
+        let(:param) do 
+          param = attributes_for(:self_care)
+          param[:user_id] = user.id 
+          another_classificaiton = create(:self_care_classification)
+          param[:self_care_classification_id] = another_classificaiton.id
+          param
+        end
+        
+        include_context 'パラメーターが間違っている場合の対応ができていること',  'self_care_classification:user_idとself_care_classificationのuser_idが同一ではありません'
+      end
+
+    end
+
+  end
+  
   describe 'GET /v1/self_cares/recent' do
     let(:log_dates) do
       [
