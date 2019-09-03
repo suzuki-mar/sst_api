@@ -4,21 +4,20 @@ require 'rails_helper'
 
 RSpec.describe SelfCare, type: :model do
   describe 'associations' do
-    subject { 
-     self_care =  create(:self_care) 
-    #  pp self_care
-    #  pp self_care.validate
-    #  exit
-     self_care
-     
-    }
+    subject do
+      self_care = create(:self_care)
+      #  pp self_care
+      #  pp self_care.validate
+      #  exit
+      self_care
+    end
 
     it {
       # pp subject
       # pp subject.validate
-      
-       is_expected.to belong_to(:self_care_classification)
-      }
+
+      is_expected.to belong_to(:self_care_classification)
+    }
     it { is_expected.to belong_to(:user) }
   end
 
@@ -30,10 +29,10 @@ RSpec.describe SelfCare, type: :model do
     it { is_expected.to validate_presence_of(:reason) }
 
     describe 'self_care_classification_id' do
-      let(:user){create(:user)}
+      let(:user) { create(:user) }
 
       context 'userに所属しているself_care_classificationの場合' do
-        let(:classification){create(:self_care_classification, user: user)}
+        let(:classification) { create(:self_care_classification, user: user) }
 
         it 'バリデーションが通ること' do
           self_care = build(:self_care, user: user, self_care_classification: classification)
@@ -41,15 +40,16 @@ RSpec.describe SelfCare, type: :model do
         end
       end
 
-       context 'userに所属していないself_care_classificationの場合' do
-          let(:another_user_classification){create(:self_care_classification)}
+      context 'userに所属していないself_care_classificationの場合' do
+        let(:another_user_classification) { create(:self_care_classification) }
 
-          it 'バリデーションが通らないこと' do
-            self_care = build(:self_care,  user: user, self_care_classification: another_user_classification)
-            expect(self_care).not_to be_valid
-            expected_message = "user_idとself_care_classificationのuser_idが同一ではありません"
-            expect(self_care.errors.messages[:self_care_classification]).to eq([expected_message])
-          end
+        it 'バリデーションが通らないこと' do
+          self_care = build(:self_care, user: user,
+                                        self_care_classification: another_user_classification)
+          expect(self_care).not_to be_valid
+          expected_message = 'user_idとself_care_classificationのuser_idが同一ではありません'
+          expect(self_care.errors.messages[:self_care_classification]).to eq([expected_message])
+        end
       end
     end
 

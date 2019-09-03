@@ -9,9 +9,8 @@ FactoryBot.define do
 
     before(:create) do |self_care|
       if self_care.self_care_classification.nil?
-        self_care.self_care_classification = create(:self_care_classification, user: self_care.user) 
+        self_care.self_care_classification = create(:self_care_classification, user: self_care.user)
       end
     end
-
   end
 end

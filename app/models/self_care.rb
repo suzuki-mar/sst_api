@@ -12,11 +12,11 @@ class SelfCare < ApplicationRecord
 
   private
 
-  def check_user_id_and_classification_user_id_same 
-    return if (self.user_id.nil?  || self.self_care_classification.nil?)
-    
+  def check_user_id_and_classification_user_id_same
+    return if user_id.nil? || self_care_classification.nil?
+
     message = 'user_idとself_care_classificationのuser_idが同一ではありません'
-    errors.add(:self_care_classification, message) if self.user_id  != self.self_care_classification.user_id
+    errors.add(:self_care_classification, message) if user_id != self_care_classification.user_id
   end
 
   def validate_of_not_future_log
