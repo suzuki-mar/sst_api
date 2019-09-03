@@ -18,15 +18,18 @@ RSpec.describe User, type: :model do
 
   describe 'need_to_write_log?' do
     let(:user) { create(:user) }
+    let(:classification) { create(:self_care_classification, user: user) }
 
     context '当日の記録の午後' do
       let(:search_date) { DateTime.now.change(hour: 13) }
 
       it '２回記録している場合はtrueが帰ること' do
         # 未来の記録をするとバリデーションにひっかかるのでバリデーションはおこなわない
-        self_care = build(:self_care, user: user, log_date: search_date)
+        self_care = build(:self_care, user: user, log_date: search_date,
+                                      self_care_classification: classification)
         self_care.save(validate: false)
-        self_care = build(:self_care, user: user, log_date: search_date)
+        self_care = build(:self_care, user: user, log_date: search_date,
+                                      self_care_classification: classification)
         self_care.save(validate: false)
 
         expect(user).to be_need_to_write_log(search_date)
@@ -34,7 +37,8 @@ RSpec.describe User, type: :model do
 
       it '記録回数が2回未満の場合はfalseが帰ること' do
         # 未来の記録をするとバリデーションにひっかかるのでバリデーションはおこなわない
-        self_care = build(:self_care, user: user, log_date: search_date)
+        self_care = build(:self_care, user: user, log_date: search_date,
+                                      self_care_classification: classification)
         self_care.save(validate: false)
 
         expect(user).not_to be_need_to_write_log(search_date)
@@ -111,10 +115,12 @@ RSpec.describe User, type: :model do
         this_month_start_day - 1.month
       ]
     end
+    let(:classification) { create(:self_care_classification, user: user) }
 
     before do
       log_dates.each do |d|
-        self_care = build(:self_care, user: user, log_date: d)
+        self_care = build(:self_care, user: user, log_date: d,
+                                      self_care_classification: classification)
         self_care.save(validate: false)
       end
     end

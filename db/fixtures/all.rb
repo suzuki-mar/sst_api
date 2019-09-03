@@ -7,6 +7,7 @@ User.seed do |s|
 end
 
 SelfCareClassification.seed do |s|
+  s.id = 1
   s.user = User.find(1)
   s.name = '仕事が楽しい'
   s.order_number = 1
