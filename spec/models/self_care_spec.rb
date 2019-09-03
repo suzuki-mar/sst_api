@@ -6,18 +6,10 @@ RSpec.describe SelfCare, type: :model do
   describe 'associations' do
     subject do
       self_care = create(:self_care)
-      #  pp self_care
-      #  pp self_care.validate
-      #  exit
       self_care
     end
 
-    it {
-      # pp subject
-      # pp subject.validate
-
-      is_expected.to belong_to(:self_care_classification)
-    }
+    it { is_expected.to belong_to(:self_care_classification) }
     it { is_expected.to belong_to(:user) }
   end
 
