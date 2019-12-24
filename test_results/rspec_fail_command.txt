@@ -1,0 +1,1 @@
+bundle exec rspec --seed 1816 spec/models/ci_cutomize_spec.rb

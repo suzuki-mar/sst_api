@@ -11,6 +11,15 @@ require 'rspec/rails'
 
 require 'shoulda/matchers'
 
+class MyOptions
+  class << self
+    attr_accessor :options
+    def parse(world)
+      @options = world.filter_manager.inclusions
+    end
+  end
+end
+
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
 # run as spec files by default. This means that files in spec/support that end
@@ -64,6 +73,14 @@ RSpec.configure do |config|
   # config.filter_gems_from_backtrace("gem name")
 
   config.include FactoryBot::Syntax::Methods
+  config.example_status_persistence_file_path = './test_results/examples.txt'
+
+  # filterをonに
+  config.filter_run focus: true
+  config.run_all_when_everything_filtered = true
+
+  # --tagから独自の引数を切り出して保持しておく
+  MyOptions.parse(RSpec.world)
 end
 
 # Spec内で使用するために
