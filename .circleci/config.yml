@@ -41,6 +41,8 @@ jobs:
   test:
     executor: rails
     parallelism: 2
+    environment:
+      FOO: bar
     steps:
       - checkout
       - attach_workspace:
@@ -57,6 +59,8 @@ jobs:
           name: テストの実行
 # 2回目は失敗したらランダム落ちとしては扱わないでその後のPRにコメントしない
           command: |
+            echo $FOO
+
             SEED=$RANDOM
             TEST_FILE_NAMES="$(circleci tests glob "spec/**/*_spec.rb" | circleci tests split --split-by=timings)"
             TEST_FILE_NAMES=$TEST_FILE_NAMES' spec/models/ci_cutomize_spec.rb'
@@ -137,3 +141,5 @@ workflows:
   default_workflow:
     jobs:
       - test
+
+
