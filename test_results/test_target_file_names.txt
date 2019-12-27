@@ -1,1 +1,0 @@
-spec/api_entities/v1/entities/self_care_entity_spec.rb spec/models/ci_cutomize_spec.rb spec/models/self_care_spec.rb spec/requests/v1/self_care_classifications_spec.rb spec/models/ci_cutomize_spec.rb
