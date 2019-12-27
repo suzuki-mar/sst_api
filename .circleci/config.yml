@@ -59,17 +59,15 @@ jobs:
           command: |
             SEED=$RANDOM
             TEST_FILE_NAMES="$(circleci tests glob "spec/**/*_spec.rb" | circleci tests split --split-by=timings)"
-            TEST_FILE_NAMES=$TEST_FILE_NAMES' spec/models/ci_cutomize_spec.rb'
             bundle exec rspec --format RspecJunitFormatter \
                               --out test_results/rspec.xml \
-                              --tag @ci_success:false \
                               --failure-exit-code=0 \
                               --no-fail-fast \
                               --seed $SEED \
                               -- $TEST_FILE_NAMES
 
             if grep "failure message" test_results/rspec.xml ; then
-              bundle exec rspec --tag @ci_success:true --only-failures --failure-exit-code=1
+              bundle exec rspec --only-failures --failure-exit-code=1
               RSPEC_FAIL_COMMAND="bundle exec rspec --seed $SEED $TEST_FILE_NAMES"
               echo $RSPEC_FAIL_COMMAND > ./test_results/rspec_fail_command.txt
               echo success > ./test_results/retury_test_needed.txt
