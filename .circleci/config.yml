@@ -118,6 +118,8 @@ jobs:
               exit 0
             fi
 
+            export GHI_TOKEN=$GITHUB_TOKEN
+            GH_LOGIN=$(curl -sS https://api.github.com/user\?access_token\=$GITHUB_TOKEN | jq '.login' --raw-output)
             ISSUE_NUMBER=`cat ./test_results/issue_number.txt`
             ISSUE_URL="$GITHUB_REPOSITORY_URL/issues/$ISSUE_NUMBER"
             echo $ISSUE_URL > "./test_results/issue_url.txt"
