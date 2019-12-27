@@ -111,7 +111,7 @@ jobs:
             PR_COMMENT="random test failed\n"
             PR_COMMENT+="created issue $REPOSITORY_URL/issues/$ISSU_NUMBER"
             ghi comment -m "`echo -e $PR_COMMENT`" $PR_NUMBER
-        name: create random test fail issues
+          name: create random test fail issues
 
       - store_test_results:
           path: test_results
