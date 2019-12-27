@@ -100,7 +100,6 @@ jobs:
 
             export GHI_TOKEN=$GITHUB_TOKEN
             GH_LOGIN=$(curl -sS https://api.github.com/user\?access_token\=$GITHUB_TOKEN | jq '.login' --raw-output)
-            PR_NUMBER=$(basename "${CIRCLE_PULL_REQUEST}")
             RSPEC_FAIL_COMMAND=`cat ./test_results/rspec_fail_command.txt`
 
             ISSUE_TITLE="random test fail commit hash:$CIRCLE_SHA1\n"
@@ -123,6 +122,7 @@ jobs:
             ISSUE_URL="$GITHUB_REPOSITORY_URL/issues/$ISSUE_NUMBER"
             echo $ISSUE_URL > "./test_results/issue_url.txt"
 
+            PR_NUMBER=$(basename "${CIRCLE_PULL_REQUEST}")
             PR_COMMENT="random test failed\n"
             PR_COMMENT+="created issue $ISSUE_URL"
             ghi comment -m "`echo -e $PR_COMMENT`" $PR_NUMBER
