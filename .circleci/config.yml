@@ -100,19 +100,18 @@ jobs:
             GH_LOGIN=$(curl -sS https://api.github.com/user\?access_token\=$GITHUB_TOKEN | jq '.login' --raw-output)
             PR_NUMBER=$(basename "${CIRCLE_PULL_REQUEST}")
             RSPEC_FAIL_COMMAND=`cat ./test_results/rspec_fail_command.txt`
-            COMMENT="random test fail\n\n"
-            COMMENT+="please create jupiter isseus\n"
-            COMMENT+="Issues URL: https://github.com/zeals-co-ltd/jupiter/issues\n\n"
-            COMMENT+="\`\`\`\n"
-            COMMENT+="title\n"
-            COMMENT+="random test fail commit hash:$CIRCLE_SHA1\n\n"
-            COMMENT+="comment\n"
-            COMMENT+="commit hash:$CIRCLE_SHA1\n"
-            COMMENT+="branch:$CIRCLE_BRANCH\n"
-            COMMENT+="test command:$RSPEC_FAIL_COMMAND\n"
-            COMMENT+='```'
-            ghi comment -m "`echo -e $COMMENT`" $PR_NUMBER
-          name: comment to PR when test fails
+
+            ISSUE_TITLE="random test fail commit hash:$CIRCLE_SHA1\n"
+            ISSUE_COMMENT="commit hash:$CIRCLE_SHA1\n"
+            ISSUE_COMMENT+="branch:$CIRCLE_BRANCH\n"
+            ISSUE_COMMENT+="test command:$RSPEC_FAIL_COMMAND\n"
+            ghi open -m "`echo -e $ISSUE_TITLE$ISSUE_COMMENT`" -L 'random test fail'
+
+            ISSU_NUMBER=`ghi list | grep "random test fail commit hash:$CIRCLE_SHA1" | head -1 | awk '{print $1}'`
+            PR_COMMENT="random test failed\n"
+            PR_COMMENT+="created issue $REPOSITORY_URL/issues/$ISSU_NUMBER"
+            ghi comment -m "`echo -e $PR_COMMENT`" $PR_NUMBER
+        name: create random test fail issues
 
       - store_test_results:
           path: test_results
