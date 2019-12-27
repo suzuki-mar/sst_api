@@ -59,6 +59,7 @@ jobs:
           name: テストの実行
 # 2回目は失敗したらランダム落ちとしては扱わないでその後のPRにコメントしない
           command: |
+            printenv
             echo $SLACK_WEBHOOK_URL
             SEED=$RANDOM
             TEST_FILE_NAMES="$(circleci tests glob "spec/**/*_spec.rb" | circleci tests split --split-by=timings)"
