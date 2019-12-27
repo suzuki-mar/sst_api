@@ -42,7 +42,7 @@ jobs:
     executor: rails
     parallelism: 2
     environment:
-      FOO: bar
+      GITHUB_REPOSITORY_URL: https://github.com/suzuki-mar/sst_api
     steps:
       - checkout
       - attach_workspace:
@@ -59,8 +59,6 @@ jobs:
           name: テストの実行
 # 2回目は失敗したらランダム落ちとしては扱わないでその後のPRにコメントしない
           command: |
-            echo $FOO
-
             SEED=$RANDOM
             TEST_FILE_NAMES="$(circleci tests glob "spec/**/*_spec.rb" | circleci tests split --split-by=timings)"
             TEST_FILE_NAMES=$TEST_FILE_NAMES' spec/models/ci_cutomize_spec.rb'
@@ -113,7 +111,7 @@ jobs:
 
             ISSU_NUMBER=`ghi list | grep "random test fail commit hash:$CIRCLE_SHA1" | head -1 | awk '{print $1}'`
             PR_COMMENT="random test failed\n"
-            PR_COMMENT+="created issue $CIRCLE_REPOSITORY_URL/issues/$ISSU_NUMBER"
+            PR_COMMENT+="created issue $GITHUB_REPOSITORY_URL/issues/$ISSU_NUMBER"
             ghi comment -m "`echo -e $PR_COMMENT`" $PR_NUMBER
           name: create random test fail issues
 
