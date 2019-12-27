@@ -109,7 +109,7 @@ jobs:
 
             ISSU_NUMBER=`ghi list | grep "random test fail commit hash:$CIRCLE_SHA1" | head -1 | awk '{print $1}'`
             PR_COMMENT="random test failed\n"
-            PR_COMMENT+="created issue $REPOSITORY_URL/issues/$ISSU_NUMBER"
+            PR_COMMENT+="created issue $CIRCLE_REPOSITORY_URL/issues/$ISSU_NUMBER"
             ghi comment -m "`echo -e $PR_COMMENT`" $PR_NUMBER
           name: create random test fail issues
 
