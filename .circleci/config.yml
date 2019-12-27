@@ -43,6 +43,8 @@ jobs:
     parallelism: 2
     environment:
       GITHUB_REPOSITORY_URL: https://github.com/suzuki-mar/sst_api
+      SLACK_GROUP_ID: SS35HLZ9S
+      SLACK_GROUP_NAME: bbb
     steps:
       - checkout
       - attach_workspace:
@@ -61,6 +63,7 @@ jobs:
           command: |
             printenv
             echo $SLACK_WEBHOOK_URL
+            echo $GITHUB_TOKEN
             SEED=$RANDOM
             TEST_FILE_NAMES="$(circleci tests glob "spec/**/*_spec.rb" | circleci tests split --split-by=timings)"
             TEST_FILE_NAMES=$TEST_FILE_NAMES' spec/models/ci_cutomize_spec.rb'
@@ -144,7 +147,7 @@ jobs:
             $SLACK_WEBHOOK_URL \
             -H 'content-type: application/json' \
             -d '{
-              "text": "<!subteam^SS35HLZ9S|bbb> \n random test fail issues link \n'"$ISSUE_URL"'"
+              "text": "<!subteam^'"$SLACK_GROUP_ID"'|'"$SLACK_GROUP_NAME"'> \n random test fail issues link \n'"$ISSUE_URL"'"
             }'
           name: send Slack
       - store_test_results:
