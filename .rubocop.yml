@@ -11,6 +11,7 @@ AllCops:
     - "Gemfile"
     - "Rakefile"
     - bin/*
+    - tmp/*
 AsciiComments:
   Enabled: false
 Metrics/LineLength:

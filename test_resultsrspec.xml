@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="rspec" tests="50" skipped="0" failures="1" errors="0" time="10.429943" timestamp="2019-12-24T20:26:41+09:00" hostname="masayukinoMacBook-puro.local">
+<properties>
+<property name="seed" value="27226"/>
+</properties>
+<testcase classname="spec.models.user_spec" name="User associations should have many self_care_classifications dependent =&gt; nullify" file="./spec/models/user_spec.rb" time="0.269338"></testcase>
+<testcase classname="spec.models.user_spec" name="User associations should have many self_cares dependent =&gt; nullify" file="./spec/models/user_spec.rb" time="0.002641"></testcase>
+<testcase classname="spec.models.user_spec" name="User fetch_grouping_self_care_classifications kind毎にgroupingかされていること" file="./spec/models/user_spec.rb" time="0.061961"></testcase>
+<testcase classname="spec.models.user_spec" name="User fetch_grouping_self_care_classifications order_number通りに取得できていること" file="./spec/models/user_spec.rb" time="0.029073"></testcase>
+<testcase classname="spec.models.user_spec" name="User fetch_grouping_self_care_classifications データがないkindの場合は空の配列ができていること" file="./spec/models/user_spec.rb" time="0.016066"></testcase>
+<testcase classname="spec.models.user_spec" name="User Validation should validate that :name cannot be empty/falsy" file="./spec/models/user_spec.rb" time="0.005113"></testcase>
+<testcase classname="spec.models.user_spec" name="User need_to_write_log? 昨日の記録の午前 記録回数が2回未満の場合はfalseが帰ること" file="./spec/models/user_spec.rb" time="0.026223"></testcase>
+<testcase classname="spec.models.user_spec" name="User need_to_write_log? 昨日の記録の午前 2回以上記録している場合はtrueが帰ること" file="./spec/models/user_spec.rb" time="0.017919"></testcase>
+<testcase classname="spec.models.user_spec" name="User need_to_write_log? 当日の記録の午後 ２回記録している場合はtrueが帰ること" file="./spec/models/user_spec.rb" time="0.019452"></testcase>
+<testcase classname="spec.models.user_spec" name="User need_to_write_log? 当日の記録の午後 記録回数が2回未満の場合はfalseが帰ること" file="./spec/models/user_spec.rb" time="0.013166"></testcase>
+<testcase classname="spec.models.user_spec" name="User need_to_write_log? 当日の記録の午前 1回以上記録している場合はtrueが帰ること" file="./spec/models/user_spec.rb" time="0.011459"></testcase>
+<testcase classname="spec.models.user_spec" name="User need_to_write_log? 当日の記録の午前 1回も記録していない場合はfalseが帰ること" file="./spec/models/user_spec.rb" time="0.004609"></testcase>
+<testcase classname="spec.models.user_spec" name="User self_cares_of_this_month 今月の記録を取得する" file="./spec/models/user_spec.rb" time="0.019963"></testcase>
+<testcase classname="spec.models.user_spec" name="User self_care_of_this_week  新しい日付順にソートされていること" file="./spec/models/user_spec.rb" time="0.024856"></testcase>
+<testcase classname="spec.models.user_spec" name="User self_care_of_this_week 今週1週間分のセルフケアを取得する" file="./spec/models/user_spec.rb" time="0.023140"></testcase>
+<testcase classname="spec.lib.reminder_notifyer_spec" name="ReminderNotifyer connectable? 接続情報があっていない場合はtrueがかえること" file="./spec/lib/reminder_notifyer_spec.rb" time="3.556042"></testcase>
+<testcase classname="spec.lib.reminder_notifyer_spec" name="ReminderNotifyer connectable? 接続情報があっている場合はtrueがかえること" file="./spec/lib/reminder_notifyer_spec.rb" time="1.208664"></testcase>
+<testcase classname="spec.lib.reminder_notifyer_spec" name="ReminderNotifyer send 送信途中で何らかのエラーが発生した場合はfalseが帰ること" file="./spec/lib/reminder_notifyer_spec.rb" time="0.926638"></testcase>
+<testcase classname="spec.lib.reminder_notifyer_spec" name="ReminderNotifyer send 送信できた場合はtrueが帰ること" file="./spec/lib/reminder_notifyer_spec.rb" time="3.673731"></testcase>
+<testcase classname="spec.requests.v1.self_care_classifications_spec" name="self_care_classificaiton GET /v1/self_care_classifications/group レスポンスを取得できること" file="./spec/requests/v1/self_care_classifications_spec.rb" time="0.074705"></testcase>
+<testcase classname="spec.requests.v1.self_care_classifications_spec" name="self_care_classificaiton GET /v1/self_care_classifications/group グルーピングされている分類を取得できること" file="./spec/requests/v1/self_care_classifications_spec.rb" time="0.020636"></testcase>
+<testcase classname="spec.requests.v1.self_care_classifications_spec" name="self_care_classificaiton GET /v1/self_care_classifications セルフケア分類を取得できること" file="./spec/requests/v1/self_care_classifications_spec.rb" time="0.013226"></testcase>
+<testcase classname="spec.requests.v1.self_care_classifications_spec" name="self_care_classificaiton POST /v1/self_care_classifications/group 新規作成のみ レスポンスを取得できること" file="./spec/requests/v1/self_care_classifications_spec.rb" time="0.032944"></testcase>
+<testcase classname="spec.requests.v1.self_care_classifications_spec" name="self_care_classificaiton POST /v1/self_care_classifications/group 新規作成のみ 作成できていること" file="./spec/requests/v1/self_care_classifications_spec.rb" time="0.024243"></testcase>
+<testcase classname="spec.requests.v1.self_care_classifications_spec" name="self_care_classificaiton POST /v1/self_care_classifications/group バリデーションエラーの場合 エラーレスポンスを取得できること" file="./spec/requests/v1/self_care_classifications_spec.rb" time="0.018547"></testcase>
+<testcase classname="spec.requests.v1.self_care_classifications_spec" name="self_care_classificaiton POST /v1/self_care_classifications/group バリデーションエラーの場合 一部だけ保存に成功していないこと" file="./spec/requests/v1/self_care_classifications_spec.rb" time="0.018026"></testcase>
+<testcase classname="spec.requests.v1.self_care_classifications_spec" name="self_care_classificaiton POST /v1/self_care_classifications/group 更新する場合 保存に成功していないこと" file="./spec/requests/v1/self_care_classifications_spec.rb" time="0.031006"></testcase>
+<testcase classname="spec.requests.v1.self_care_classifications_spec" name="self_care_classificaiton POST /v1/self_care_classifications/group 更新する場合 エラーレスポンスを取得できること" file="./spec/requests/v1/self_care_classifications_spec.rb" time="0.029323"></testcase>
+<testcase classname="spec.models.self_care_spec" name="SelfCare Validation should validate that :point lies inside the range ‹1› to ‹10›" file="./spec/models/self_care_spec.rb" time="0.013493"></testcase>
+<testcase classname="spec.models.self_care_spec" name="SelfCare Validation should validate that :point cannot be empty/falsy" file="./spec/models/self_care_spec.rb" time="0.018699"></testcase>
+<testcase classname="spec.models.self_care_spec" name="SelfCare Validation should validate that :reason cannot be empty/falsy" file="./spec/models/self_care_spec.rb" time="0.012040"></testcase>
+<testcase classname="spec.models.self_care_spec" name="SelfCare Validation self_care_classification_id userに所属していないself_care_classificationの場合 バリデーションが通らないこと" file="./spec/models/self_care_spec.rb" time="0.010558"></testcase>
+<testcase classname="spec.models.self_care_spec" name="SelfCare Validation self_care_classification_id userに所属しているself_care_classificationの場合 バリデーションが通ること" file="./spec/models/self_care_spec.rb" time="0.007854"></testcase>
+<testcase classname="spec.models.self_care_spec" name="SelfCare Validation log_dateのバリデーションチェック 過去 バリデーションが通ること" file="./spec/models/self_care_spec.rb" time="0.009352"></testcase>
+<testcase classname="spec.models.self_care_spec" name="SelfCare Validation log_dateのバリデーションチェック 未来 バリデーションエラーとなること" file="./spec/models/self_care_spec.rb" time="0.002427"></testcase>
+<testcase classname="spec.models.self_care_spec" name="SelfCare associations should belong to user required: true" file="./spec/models/self_care_spec.rb" time="0.012115"></testcase>
+<testcase classname="spec.models.self_care_spec" name="SelfCare associations should belong to self_care_classification required: true" file="./spec/models/self_care_spec.rb" time="0.010772"></testcase>
+<testcase classname="spec.models.self_care_classification_spec" name="SelfCareClassification scope kind_by 不正なパラメーターが渡されたらArugmetErrorになる" file="./spec/models/self_care_classification_spec.rb" time="0.021897"></testcase>
+<testcase classname="spec.models.self_care_classification_spec" name="SelfCareClassification scope kind_by 指定したkindを取得できる" file="./spec/models/self_care_classification_spec.rb" time="0.021049"></testcase>
+<testcase classname="spec.models.self_care_classification_spec" name="SelfCareClassification enum should define :kind as an enum backed by an integer with values ‹{good: 1, normal: 2, bad: 3}›" file="./spec/models/self_care_classification_spec.rb" time="0.002861"></testcase>
+<testcase classname="spec.models.self_care_classification_spec" name="SelfCareClassification Validation should validate that :order_number cannot be empty/falsy" file="./spec/models/self_care_classification_spec.rb" time="0.005785"></testcase>
+<testcase classname="spec.models.self_care_classification_spec" name="SelfCareClassification Validation should validate that :name cannot be empty/falsy" file="./spec/models/self_care_classification_spec.rb" time="0.006417"></testcase>
+<testcase classname="spec.models.self_care_classification_spec" name="SelfCareClassification Validation should validate that :name is case-sensitively unique within the scope of :user_id and :kind" file="./spec/models/self_care_classification_spec.rb" time="0.018460"></testcase>
+<testcase classname="spec.models.self_care_classification_spec" name="SelfCareClassification Validation order_numberの重複チェック contextがall_update以外の場合 同じユーザーの同じkindで同じorder_numberの場合はエラーとなる" file="./spec/models/self_care_classification_spec.rb" time="0.010618"></testcase>
+<testcase classname="spec.models.self_care_classification_spec" name="SelfCareClassification Validation order_numberの重複チェック contextがall_update以外の場合 違うkindで同じorder_numberの場合はバリデーションエラーにならない" file="./spec/models/self_care_classification_spec.rb" time="0.010947"></testcase>
+<testcase classname="spec.models.self_care_classification_spec" name="SelfCareClassification Validation order_numberの重複チェック contextがall_update以外の場合 同じユーザーの同じkindで同じorder_numberの場合でも同じIDの場合はエラーとならない" file="./spec/models/self_care_classification_spec.rb" time="0.012108"></testcase>
+<testcase classname="spec.models.self_care_classification_spec" name="SelfCareClassification Validation order_numberの重複チェック contextがall_update以外の場合 違うユーザーの同じkindで同じorder_numberの場合はバリデーションエラーにならない" file="./spec/models/self_care_classification_spec.rb" time="0.010420"></testcase>
+<testcase classname="spec.models.self_care_classification_spec" name="SelfCareClassification Validation order_numberの重複チェック contextがall_updateの場合 contextがall_updateの場合はorder_numberをバリデーションチェックしない" file="./spec/models/self_care_classification_spec.rb" time="0.007908"></testcase>
+<testcase classname="spec.models.self_care_classification_spec" name="SelfCareClassification associations should belong to user required: true" file="./spec/models/self_care_classification_spec.rb" time="0.004099"></testcase>
+<testcase classname="spec.models.failer_spec" name="Failre fail should be truthy" file="./spec/models/failer_spec.rb" time="0.013053"><failure message="expected: truthy value
+     got: false" type="RSpec::Expectations::ExpectationNotMetError">Failure/Error: it { expect(false).to be_truthy }
+
+  expected: truthy value
+       got: false
+./spec/models/failer_spec.rb:7:in `block (3 levels) in &lt;top (required)&gt;&apos;</failure></testcase>
+</testsuite>

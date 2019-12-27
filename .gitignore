@@ -33,3 +33,5 @@ coverage/*
 
 # Ignore application configuration
 /config/application.yml
+test_results
+test_retury_results

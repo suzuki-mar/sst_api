@@ -64,6 +64,7 @@ RSpec.configure do |config|
   # config.filter_gems_from_backtrace("gem name")
 
   config.include FactoryBot::Syntax::Methods
+  config.example_status_persistence_file_path = './test_results/examples.txt'
 end
 
 # Spec内で使用するために
